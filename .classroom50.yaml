@@ -1,0 +1,12 @@
+schema: "classroom50/repo-config/v1"
+classroom: "it-367-web-application-development"
+assignment: "final-project"
+owner:
+  username: "MarkMorley"
+  id: 205567393
+  accepted_at: "2026-11-12T06:09:03Z"
+source:
+  owner: "tambanivohitra007"
+  owner_id: 1229518
+  repo: "it341-laravel-final-starter"
+  branch: "main"
