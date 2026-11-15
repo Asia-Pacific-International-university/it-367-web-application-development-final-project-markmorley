@@ -129,41 +129,124 @@ Each member must contribute at least ฿30 per month. The system will calculate 
 Only users with the Club Officer / Admin role can create and publish announcements. Treasurers and members can view published announcements but cannot create or edit them.
 
 ![ERD](docs/erd.png)
+![ERD](docs/architecture.png)
 
-**Architecture:** _a simple diagram or list: Vue/React frontend, Laravel API, database, and where each will be hosted. Put the diagram in `docs/architecture.png`._
+## 6. API Plan
 
-## 6. API plan
+The system will use a Laravel 12 REST API to handle communication between the Vue.js 3 frontend and the database. The API will use JSON responses and Laravel Sanctum for authentication. Protected endpoints will require a valid authentication token.
 
-| Method | URL | Role | Purpose |
+### 6.1 Authentication Endpoints
+
+| Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
-| POST | `/api/login` | guest | Log in and receive a token |
-| | | | |
+| POST | `/api/login` | Public | Authenticate a user and return an access token. |
+| POST | `/api/logout` | Authenticated users | Log out the current user and revoke their token. |
+| GET | `/api/user` | Authenticated users | Return the current user's account information and role. |
 
-## 7. Frontend plan
+### 6.2 Member Management Endpoints
 
-**Framework:** _Vue.js or React (required by CLO 2), e.g. React with Vite_. **Why:** _one or two sentences_.
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/members` | Admin, Treasurer | Retrieve the list of registered members. |
+| POST | `/api/members` | Admin, Treasurer | Create a new member account and profile. |
+| GET | `/api/members/{id}` | Admin, Treasurer | View a specific member's information. |
+| PUT | `/api/members/{id}` | Admin, Treasurer | Update a member's information. |
+| GET | `/api/profile` | Member | View the current member's own profile. |
+| PUT | `/api/profile` | Member | Update the current member's own profile. |
 
-**Main screens:**
+### 6.3 Monthly Dues Endpoints
 
-1. _Login_
-2.
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/monthly-dues` | Admin, Treasurer | View monthly dues records and payment statuses. |
+| GET | `/api/monthly-dues/{id}` | Admin, Treasurer | View the details of a monthly dues record. |
+| GET | `/api/my/monthly-dues` | Member | View the current member's own monthly dues and payment status. |
 
-## 8. Level-up features
+### 6.4 Payment Endpoints
+
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/payments` | Admin, Treasurer | View all payment records. |
+| POST | `/api/payments` | Treasurer | Record a payment for a registered member. |
+| GET | `/api/payments/{id}` | Admin, Treasurer | View payment details. |
+| GET | `/api/my/payments` | Member | View the current member's own payment history. |
+
+### 6.5 Donation and Financial Report Endpoints
+
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/donations` | Admin, Treasurer | View donation records. |
+| GET | `/api/reports/monthly` | Treasurer | Generate a monthly financial report showing dues, donations, and total contributions. |
+| GET | `/api/reports/annual` | Treasurer | Generate an annual financial summary. |
+
+### 6.6 Announcement Endpoints
+
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/announcements` | All authenticated users | View published club announcements. |
+| GET | `/api/announcements/{id}` | All authenticated users | View a specific announcement. |
+| POST | `/api/announcements` | Admin | Publish a new announcement. |
+| PUT | `/api/announcements/{id}` | Admin | Edit an announcement. |
+| DELETE | `/api/announcements/{id}` | Admin | Delete an announcement. |
+
+### 6.7 API Security and Validation
+
+- Users must log in before accessing protected API endpoints.
+- Laravel Sanctum will handle authentication using access tokens.
+- The API will check user roles before allowing restricted actions.
+- Members can only view and update their own profile and payment information.
+- Only the Treasurer can record payments.
+- Only the Admin can publish, edit, or delete announcements.
+- Payment amounts, dates, and payment methods will be validated by the Laravel backend.
+- The backend will calculate monthly dues and donation amounts to prevent incorrect payment records.
+- All API responses will use JSON format.
+
+## 7. Frontend Plan
+
+The project will use Vue.js 3 with Vite for the frontend. Vue.js was selected because its template syntax is beginner-friendly and makes it easier to organize the application into reusable components.
+
+The frontend will communicate with the Laravel 12 REST API to retrieve and manage membership, dues, payment, donation, and announcement information.
+
+### Main Screens
+
+1. Login page
+2. Admin dashboard
+3. Member management
+4. Payment management
+5. Monthly dues tracking
+6. Financial reports
+7. Announcements
+8. Member profile and payment history
+
+## 8. Level-up Features
 
 | Feature | Points | How it fits my app |
 | --- | --- | --- |
-| | | |
+| Financial Dashboard | To be determined | Displays charts and financial summaries showing monthly dues, donations, total contributions, and unpaid members. |
+| Export Financial Reports | To be determined | Allows the Treasurer to download monthly and annual financial reports in CSV or PDF format. |
+| Monthly Payment Reminders | To be determined | Helps members remember their monthly dues by notifying them when their payments are still incomplete. |
 
-## 9. Out of scope
+These features will improve financial monitoring, reduce manual reporting work, and help members stay informed about their monthly contributions.
 
-_What you will deliberately not build in 3 weeks._
+## 9. Out of Scope
 
--
+The following features are outside the scope of this project:
+
+1. **Online Payment Processing:** The system will not process payments through online payment gateways. The Treasurer will manually record cash and bank transfer payments.
+2. **Mobile Application:** The project will focus on a web-based application that users can access through a web browser.
+3. **Automatic Bank Integration:** The system will not connect directly to bank accounts or automatically verify bank transfers.
+4. **Multiple Club Management:** The system will support one Filipino Club rather than managing multiple clubs or organizations.
+5. **Advanced Accounting:** The system will manage membership dues, donations, and financial reports but will not provide advanced accounting or tax management features.
+
+These limitations will help keep the project focused on its main purpose: managing club membership information, monthly dues, payments, donations, and financial reports.
 
 ## 10. Changelog
 
-_Add a dated entry for every change to this plan after the Week 1 check-in._
-
-| Date | What changed | Why |
-| --- | --- | --- |
-| | | |
+| Date | Changes |
+| --- | --- |
+| November 10, 2026 | Created the initial PRD and identified the problem, current management process, and primary users. |
+| November 11, 2026 | Defined user roles, permissions, and the main user stories for the system. |
+| November 12, 2026 | Added business rules for monthly dues, payment methods, and donations. |
+| November 13, 2026 | Designed the initial data model and created the ERD and architecture diagrams. |
+| November 14, 2026 | Selected Vue.js 3 with Vite for the frontend and updated the frontend architecture. |
+| November 15, 2026 | Added the API plan, level-up features, and out-of-scope requirements. |
