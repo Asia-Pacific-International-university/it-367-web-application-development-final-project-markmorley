@@ -8,9 +8,15 @@
 
 ---
 
-## 1. Problem and users
+## 1. Problem and User
 
-_What problem does your app solve, for whom, and why does it matter? One short paragraph. Name a real kind of user (e.g. "the 3 staff of a small campus bookshop"), not "everyone"._
+The Filipino Club currently manages its membership information and dues payments using spreadsheets and manual records. This approach can make it difficult for club officers and the treasurer to keep track of which members have paid and which members still have outstanding dues. Payment records can also become scattered or difficult to find, making it time-consuming to prepare financial reports. In addition, members may have difficulty checking their own payment history. The Club Membership and Dues Management System will provide a centralized platform where club officers, the treasurer, and members can manage and access relevant membership and payment information more easily.
+
+**Primary users:**
+
+- **Club officers:** Manage club membership information and oversee membership and dues activities.
+- **Treasurer:** Record and monitor dues payments, check unpaid balances, and prepare financial reports.
+- **Members:** View their membership information and check their own payment history.
 
 ## 2. User roles
 
