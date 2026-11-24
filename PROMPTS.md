@@ -653,3 +653,56 @@
 - **What I changed by hand and why:** I supplied the migration schema and asked for it to be saved before running the migration.
 - **How I checked it works:** Ran `php -l database/migrations/2026_11_24_074647_create_payments_table.php`; no syntax errors were reported. I did not run the migration as requested.
 - **Commit:** `d12c370`
+
+---
+
+### Step 25: Add the Payment model
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ````text
+  Add this
+  <?php
+
+  namespace App\Models;
+
+  use Illuminate\Database\Eloquent\Factories\HasFactory;
+  use Illuminate\Database\Eloquent\Model;
+  use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+  class Payment extends Model
+  {
+      use HasFactory;
+
+      protected $fillable = [
+          'member_profile_id',
+          'recorded_by_user_id',
+          'amount',
+          'payment_date',
+          'payment_method',
+      ];
+
+      protected function casts(): array
+      {
+          return [
+              'amount' => 'decimal:2',
+              'payment_date' => 'date',
+          ];
+      }
+
+      public function memberProfile(): BelongsTo
+      {
+          return $this->belongsTo(MemberProfile::class);
+      }
+
+      public function recordedBy(): BelongsTo
+      {
+          return $this->belongsTo(User::class, 'recorded_by_user_id');
+      }
+  }
+  ````
+- **What the AI produced:** Added the `Payment` Eloquent model with fillable payment fields, amount/date casts, and `memberProfile()` and `recordedBy()` relationships.
+- **What I changed by hand and why:** I supplied the requested model implementation.
+- **How I checked it works:** Ran `php -l app/Models/Payment.php`; no syntax errors were reported.
+- **Commit:** `1436a9b`
