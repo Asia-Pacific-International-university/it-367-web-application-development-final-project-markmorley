@@ -1234,3 +1234,18 @@
 - **What I changed by hand and why:** I kept the author behind `whenLoaded` so serializing an announcement without eager loading does not trigger a lazy load or N+1 query. The API only includes the author's id and name when the relation is intentionally loaded.
 - **How I checked it works:** Tinker showed the loaded author's id and name without email, and omitted the `author` key when the relation was unloaded. `php artisan test` passed all 20 tests. Pint and `git diff --check` passed.
 - **Commit:** `ff3dd51`
+
+---
+
+### Step 58: Add both Form Requests for announcements
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add StoreAnnouncementRequest and UpdateAnnouncementRequest. Authorize through AnnouncementPolicy, validate title, message, and published_at, and let updates modify only submitted fields. Verify the store rules in Tinker, run the tests, commit, and log the change.
+  ```
+- **What the AI produced:** Added store and update Form Requests with policy authorization and the requested validation rules.
+- **What I changed by hand and why:** I kept `author_user_id` out of both requests so the controller can assign the author from the authenticated admin rather than trusting client input. The update rules use `sometimes` so a request can change just one field.
+- **How I checked it works:** Tinker returned `false` for valid store input and `["title"]` for invalid input. `php artisan test` passed all 20 tests. Pint and `git diff --check` passed. Update authorization will be exercised after its route is added in the next step.
+- **Commit:** `4259224`
