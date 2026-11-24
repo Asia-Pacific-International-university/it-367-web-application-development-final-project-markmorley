@@ -919,3 +919,18 @@
 - **What I changed by hand and why:** I specified the schema. `author_user_id` explicitly references `users`; deletion is restricted to preserve announcements if an author account is removed. `message` uses text for longer content, and nullable `published_at` supports drafts.
 - **How I checked it works:** `php -l` passed, `php artisan migrate` completed, and `php artisan db:table announcements` showed 7 columns (`id`, `author_user_id`, `title`, `message`, `published_at`, `created_at`, `updated_at`), an index on `published_at`, and a `users` foreign key with restrict on delete.
 - **Commit:** `a04ed3d`
+
+---
+
+### Step 37: Add the Announcement model
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Create app/Models/Announcement.php without another migration. Add fillable author_user_id, title, message, and published_at fields, cast published_at to datetime, and define the author belongs-to relationship using author_user_id. Verify it in Tinker, run the tests, commit the model, and log it.
+  ```
+- **What the AI produced:** Added the `Announcement` model with its fillable fields, `published_at` datetime cast, and author relationship.
+- **What I changed by hand and why:** I specified the model structure. The relationship uses `author_user_id` because the default key inferred from `author()` would be `author_id`. Although fillable, the author ID must be set from the authenticated user by the controller, not accepted from request data.
+- **How I checked it works:** Tinker created an announcement and returned its author's name and publication date `2026-11-24`. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `62474bb`
