@@ -1264,3 +1264,18 @@
 - **What I changed by hand and why:** I kept the draft filter in the index query because `viewAny` only authorizes access to the list; it does not automatically apply `view` to each row. Filtering at the query prevents drafts from being included in non-admin responses.
 - **How I checked it works:** `php artisan route:list --path=api/announcements` showed the expected five routes. `php artisan test` passed all 20 tests. Pint and `git diff --check` passed.
 - **Commit:** `83d4fb4`
+
+---
+
+### Step 60: Add the announcement tests
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add the supplied AnnouncementApiTest feature tests for authentication, admin-only writes, validation, author assignment, draft visibility, response privacy, update/delete behavior, and missing records. Run the focused and full test suites, commit the test file, and record the hash.
+  ```
+- **What the AI produced:** Added 13 API feature tests covering announcement access, CRUD behavior, validation, draft filtering, and response fields.
+- **What I changed by hand and why:** I kept the supplied assertions intact so failures would expose problems in the policy, requests, resource, or controller rather than being hidden by weakened tests.
+- **How I checked it works:** `php artisan test --filter=AnnouncementApiTest` passed all 13 tests (40 assertions). `php artisan test` passed all 33 tests (109 assertions). Pint and `git diff --check` passed.
+- **Commit:** `771ccb1`
