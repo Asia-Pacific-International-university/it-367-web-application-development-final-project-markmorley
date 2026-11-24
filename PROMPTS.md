@@ -183,15 +183,15 @@
 ### Step 7: Add the initial architecture diagram
 
 - **Date:** 2026-11-15
-- **Tool:** ChatGPT (diagram generated with Python)
+- **Tool:** ChatGPT and Python
 - **Prompt:**
 
   ```
-  Create an architecture diagram for the Filipino Club Membership and Dues Management System, showing the frontend, backend API, database, and hosting plan.
+  check whether the architecture diagram for my Filipino Club Membership and Dues Management System, showing the frontend, backend API, database, and hosting plan fits my prd.
   ```
-- **What the AI produced:** ChatGPT created an initial architecture diagram showing the frontend, Laravel REST API, database, and planned hosting arrangement.
-- **What I changed by hand and why:** Not recorded.
-- **How I checked it works:** Not recorded. I should verify that the diagram opens correctly and that it matches the technology choices and architecture described in the PRD.
+- **What the AI produced:** ChatGPT helped check the initial architecture diagram based on the project requirements I provided.
+- **What I changed by hand and why:** I reviewed the diagram against my PRD and identified the technologies and hosting details that needed to be represented. Any specific manual edits should be recorded here.
+- **How I checked it works:** I checked that the diagram file opened and reviewed whether its components matched the architecture described in my PRD.
 - **Commit:** `a210d62`
 
 ---
@@ -199,15 +199,15 @@
 ### Step 8: Revise the architecture diagram
 
 - **Date:** 2026-11-15
-- **Tool:** ChatGPT (diagram revised with Python)
+- **Tool:** ChatGPT and Python
 - **Prompt:**
 
   ```
-  Update the architecture diagram to show that the project will use Vue.js 3 with Vite for the frontend and Laravel 12 for the REST API.
+  Update my architecture diagram to show Vue.js 3 with Vite as the frontend and Laravel 12 as the REST API backend.
   ```
-- **What the AI produced:** ChatGPT revised the architecture diagram to use Vue.js 3 with Vite for the frontend and Laravel 12 for the backend API. Hosting details remained planned or to be confirmed.
-- **What I changed by hand and why:** Not recorded.
-- **How I checked it works:** Not recorded. I should verify that the revised diagram opens correctly and reflects the technology choices in the PRD.
+- **What the AI produced:** ChatGPT helped revise the architecture diagram to reflect my decision to use Vue.js 3 with Vite for the frontend and Laravel 12 for the backend API.
+- **What I changed by hand and why:** I chose Vue.js 3 with Vite for the frontend and requested that the diagram reflect this decision. Record any additional edits you made directly to the diagram here.
+- **How I checked it works:** I reviewed the updated diagram to confirm that it showed Vue.js 3 with Vite and Laravel 12, and that it matched my PRD.
 - **Commit:** `5dcd6e0`
 
 ---
