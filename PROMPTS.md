@@ -1069,3 +1069,18 @@
 - **What I changed by hand and why:** I replaced Payment's outdated `monthly_dues_id` and `dues_portion` fields with `member_profile_id` and documented the new `PaymentMonthlyDues` pivot keys and `allocated_amount`. I also added User role fields, MemberProfile's `deleted_at`, and the author/payment fields for Donation and Announcement, and updated the relationships to show the many-to-many dues allocation. The pivot's `allocated_amount` records how much of a payment applies to a particular dues month, allowing a payment to be split across months and dues totals to be distinguished from excess donations.
 - **How I checked it works:** Compared the documented field and foreign-key names against the users, member_profiles, monthly_dues, payments, payment_monthly_dues, donations, and announcements migrations. The VS Code preview attempt was interrupted by active user input.
 - **Commit:** `3d0049c`
+
+---
+
+### Step 47: Update the PRD donation rules and payments endpoint
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Update PRD section 5.3 to explain how payments are allocated across selected dues months and how excess becomes a donation. Update the POST /api/payments row with its request fields and add the 201 response shape. Compare the rules with the seeder, preview the PRD, commit the change, and log the hash.
+  ```
+- **What the AI produced:** Documented the outstanding-balance allocation, donation remainder, monthly paid/unpaid status, transaction behavior, and payment request/response in the PRD.
+- **What I changed by hand and why:** For each selected month, subtract existing allocations from its required dues and allocate only what is still owed, up to the payment amount left. After processing the selected months, any payment remainder becomes a donation and is not carried into another month.
+- **How I checked it works:** `git diff --check` passed. Compared the rules with `DatabaseSeeder`: a 50 payment allocates 30 to dues and records the remaining 20 as a donation. Opened the VS Code preview, but navigating to the edited sections was interrupted by active user input, so their rendered appearance was not visually confirmed.
+- **Commit:** `f599895`
