@@ -1099,3 +1099,18 @@
 - **What I changed by hand and why:** I chose Option A: a new registrant has no MemberProfile until an officer or treasurer creates one. This keeps public registration limited to login-account details and leaves member-profile creation with the club staff who manage membership information.
 - **How I checked it works:** `git diff --check` passed. Confirmed the registration row appears above login in section 6.1 and the rate-limit and profile notes follow the table. The VS Code preview was open, but navigating to section 6.1 was interrupted by active user input, so the rendered section was not visually confirmed.
 - **Commit:** `b5510e9`
+
+---
+
+### Step 49: Add error behavior for each business rule
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add an error-behavior table to PRD section 4 for invalid access, payment fields, dues selections, partial payments, already-paid months, excess donations, and client-supplied allocation amounts. Decide how partial and already-paid months behave, check the table against the migrations and section 5.3, preview, commit, and log the change.
+  ```
+- **What the AI produced:** Added the business-rule response table and clarified in section 5.3 that selecting an already-paid month rejects the request.
+- **What I changed by hand and why:** I chose to accept partial payments because several allocations can add up to the monthly requirement while the month remains unpaid. I chose to reject selecting an already-paid month rather than turn a duplicate dues selection into a donation; a payment must target dues that are still outstanding.
+- **How I checked it works:** `git diff --check` passed. Compared the documented payment, dues, pivot, and donation fields with their migrations, and confirmed the partial-payment and paid-status rules agree with section 5.3. The VS Code preview was open, but scrolling to the new table was interrupted by active user input, so its rendered appearance was not visually confirmed.
+- **Commit:** `55a1123`
