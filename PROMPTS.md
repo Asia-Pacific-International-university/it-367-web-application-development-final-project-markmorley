@@ -1324,3 +1324,18 @@
 - **What I changed by hand and why:** I added a service-level rejection for an empty `monthly_dues_ids` array. The PRD requires at least one selected month, and without the guard the service could save a donation-only payment.
 - **How I checked it works:** Tinker returned a ฿20 donation and ฿30 allocation from a ฿50 payment; a repeat for the paid month raised a validation error without increasing the payment count; a ฿10 partial payment had no donation. The four focused service tests passed, and `php artisan test` passed all 29 tests. Pint and `git diff --check` passed.
 - **Commit:** `430b866`
+
+---
+
+### Step 64: Add tests for the PaymentService rules (course Step 48)
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Replace PaymentServiceTest with rule-focused tests for exact and excess payment allocation, multiple months, partial payments, already-paid months, member ownership, zero amount, transaction rollback, and treasurer attribution. Run focused and full tests, commit, and push.
+  ```
+- **What the AI produced:** Expanded `PaymentServiceTest` to nine focused tests with shared setup and payment/allocation helpers.
+- **What I changed by hand and why:** I kept the requested checks for allocation totals, donation amounts, validation errors, unchanged database state after rejected payments, and the treasurer/member IDs associated with a payment.
+- **How I checked it works:** `php artisan test --filter=PaymentServiceTest` passed all 9 tests (23 assertions). `php artisan test` passed all 34 tests (103 assertions). Pint and `git diff --check` passed.
+- **Commit:** `3bdda27`
