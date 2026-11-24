@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Payment extends Model
 {
@@ -34,5 +35,12 @@ class Payment extends Model
     public function recordedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'recorded_by_user_id');
+    }
+
+    public function monthlyDues(): BelongsToMany
+    {
+        return $this->belongsToMany(MonthlyDues::class, 'payment_monthly_dues', 'payment_id', 'monthly_dues_id')
+            ->withPivot('allocated_amount')
+            ->withTimestamps();
     }
 }
