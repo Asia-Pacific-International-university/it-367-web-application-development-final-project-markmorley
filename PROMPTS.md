@@ -732,3 +732,53 @@
 - **What I changed by hand and why:** I requested the relationship method beneath `monthlyDues()`; the `HasMany` import was already present.
 - **How I checked it works:** Ran `php -l app/Models/MemberProfile.php`; no syntax errors were reported.
 - **Commit:** `8627016`
+
+---
+
+### Step 27: Add the Payment factory
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:** The request had two parts:
+  ````text
+  Open `database/factories/PaymentFactory.php`, add these imports at the top if they're missing, replace `definition()`, and **save**:
+
+  php
+
+  ```
+  use App\Models\MemberProfile;
+  use App\Models\User;
+  ```
+  ````
+  The factory definition supplied after clarification:
+  ```text
+  public function definition(): array
+  {
+      return [
+          'member_profile_id' => MemberProfile::factory(),
+          'recorded_by_user_id' => User::factory()->treasurer(),
+          'amount' => fake()->randomElement([30, 30, 30, 50, 100]),
+          'payment_date' => fake()->dateTimeBetween('-3 months', 'now')->format('Y-m-d'),
+          'payment_method' => fake()->randomElement(['cash', 'bank_transfer']),
+      ];
+  }
+  ```
+- **What the AI produced:** Added `PaymentFactory` with generated member and treasurer relationships, payment amounts, dates, and methods.
+- **What I changed by hand and why:** I supplied the factory definition. The required `UserFactory::treasurer()` state was added separately in Step 28.
+- **How I checked it works:** PHP syntax checks passed for both factories and all 16 tests passed. A Tinker smoke check showed the treasurer role and generated payment attributes; resolving the related factories also created related user/profile records, while the payment itself was not saved.
+- **Commit:** `7521e3b`
+
+---
+
+### Step 28: Add the treasurer state to UserFactory
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  No separate prompt. This supporting state was needed because the PaymentFactory definition calls User::factory()->treasurer().
+  ```
+- **What the AI produced:** Added `UserFactory::treasurer()` to set the user's role to `User::ROLE_TREASURER`.
+- **What I changed by hand and why:** Added the state helper so `PaymentFactory` can generate a treasurer as the payment recorder.
+- **How I checked it works:** `php -l` passed for `UserFactory.php`; a Tinker smoke check returned the `treasurer` role, and all 16 tests passed.
+- **Commit:** `47bbd7d`
