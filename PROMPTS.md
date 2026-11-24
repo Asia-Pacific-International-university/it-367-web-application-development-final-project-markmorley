@@ -517,7 +517,7 @@
 - **Tool:** Copilot
 - **Prompt:**
   ````text
-  Replace the `definition()` method with the code below, then **save**:
+  Replace the `definition()` method with the code below, then save:
 
   php
 
