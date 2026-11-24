@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\MemberProfile;
+use App\Models\MonthlyDues;
 use App\Models\Note;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -34,10 +35,22 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
         ]);
 
-        MemberProfile::factory()->for($memberUser)->create([
+        $demoProfile = MemberProfile::factory()->for($memberUser)->create([
             'full_name' => 'Demo Member',
             'student_id' => 'S10001',
         ]);
+
+        $profiles = MemberProfile::factory()->count(10)->create();
+        $profiles->push($demoProfile);
+
+        foreach ($profiles as $profile) {
+            foreach ([9, 10, 11] as $month) {
+                MonthlyDues::factory()->for($profile)->create([
+                    'month' => $month,
+                    'year' => 2026,
+                ]);
+            }
+        }
 
         $demo = User::factory()->create([
             'name' => 'Demo User',
