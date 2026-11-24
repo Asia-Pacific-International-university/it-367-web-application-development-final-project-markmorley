@@ -72,28 +72,44 @@ Notes:
 **Acceptance criteria**
 
 - **US01 – Add new members**
-  - Given I am logged in as a club officer, when I enter valid member information and submit the form, then the system saves the new member.
-  - Given required information is missing, when I submit the form, then the system displays a validation message.
+  - Given I am logged in as an officer or treasurer, when I submit a valid full name, student ID and email, then the system saves the member and returns `201`.
+  - Given a required field is missing, when I submit the form, then the system returns `422` with a message for each missing field and saves nothing.
+  - Given the student ID or email already exists, when I submit the form, then the system returns `422` on that field and saves nothing.
+  - Given I am logged in as a member, when I try to add a member, then the system returns `403`.
 - **US02 – Edit member information**
-  - Given I am logged in as a club officer, when I update a member's information, then the system saves the changes.
+  - Given I am logged in as an officer or treasurer, when I update a member's details, then the system saves the changes and returns the updated member.
+  - Given I change the student ID to one that another member already has, when I submit, then the system returns `422` and keeps the old value.
+  - Given the member does not exist, when I try to edit them, then the system returns `404`.
 - **US03 – View member list**
-  - Given I am logged in as a club officer, when I open the member list, then the system displays registered members.
+  - Given I am logged in as an officer or treasurer, when I open the member list, then the system returns members 10 per page, newest first.
+  - Given I search by name or student ID, when I submit the search, then only matching members are returned.
+  - Given I am logged in as a member, when I open the member list, then the system returns `403`.
 - **US04 – Record payments**
-  - Given I am logged in as a treasurer, when I enter a registered member, payment amount, and payment date, then the system saves the payment record for that member.
-  - Given the selected member is not registered, when I try to record a payment, then the system rejects the invalid member selection.
+  - Given I am logged in as a treasurer, when I submit a registered member, an amount above zero, a payment date, a method and at least one of that member's months, then the system saves the payment, its allocations and any donation, and returns `201`.
+  - Given the member does not exist, the amount is zero or negative, the date is invalid, or a month belongs to another member, when I submit, then the system returns `422` on the field at fault and saves nothing.
+  - Given a selected month is already fully paid, when I submit, then the system returns `422` and saves nothing.
+  - Given I am logged in as an officer or a member, when I try to record a payment, then the system returns `403`.
 - **US05 – Select payment method**
-  - Given I am recording a payment, when I select cash or bank transfer, then the system saves the selected payment method with the transaction.
+  - Given I am recording a payment, when I choose cash or bank transfer, then the system saves that method with the payment.
+  - Given I send any other method, when I submit, then the system returns `422` on `payment_method`.
 - **US06 – View paid and unpaid members**
-  - Given I am logged in as a treasurer, when I open the dues status page, then the system shows which members have paid and which members still owe dues.
+  - Given I am logged in as a treasurer, when I open the dues status page for a month, then the system lists each member with that month's allocated total and a paid or unpaid status.
+  - Given a member's allocations for the month add up to ฿30 or more, then they are shown as paid, and otherwise as unpaid.
+  - Given I filter by status, when I choose unpaid, then only unpaid members are listed.
 - **US07 – View payment records**
-  - Given I am logged in as a treasurer, when I open the payment records page, then the system displays the club's payment transactions.
+  - Given I am logged in as a treasurer or officer, when I open the payment records page, then the system lists payments 10 per page, newest first, with the member, amount, method, months covered and donation.
+  - Given I filter by date range or by member, when I submit the filter, then only matching payments are listed.
 - **US08 – Generate financial reports**
-  - Given I am logged in as a treasurer, when I select a reporting period, then the system generates a report showing the collected dues for that period.
+  - Given I am logged in as a treasurer, when I choose a month or a year, then the system returns total dues collected, total donations and the number of paid and unpaid members for that period.
+  - Given a period with no payments, when I generate the report, then the totals are zero and the request still succeeds.
+  - Given I am logged in as anyone else, when I request a report, then the system returns `403`.
 - **US09 – View payment history**
-  - Given I am logged in as a member, when I open my payment history, then the system displays only my own payment records.
+  - Given I am logged in as a member, when I open my payment history, then the system returns only my own payments.
+  - Given I request another member's payments by changing the address, when the request arrives, then the system returns `403` or `404` and shows nothing of theirs.
 - **US10 – View and edit personal information**
-  - Given I am logged in as a member, when I open my profile, then the system displays my own membership information.
-  - Given I am logged in as a member, when I update my permitted personal details, then the system saves the changes without allowing me to edit another member's profile.
+  - Given I am logged in as a member, when I open my profile, then the system shows my own information.
+  - Given I update my full name or phone, when I submit, then the system saves the change.
+  - Given I send a `student_id`, `role` or `user_id`, when I submit, then the system ignores it and keeps the old values.
 
 ## 4. Business Rules
 
