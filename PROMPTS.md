@@ -368,4 +368,4 @@
 - **What the AI produced:** Revised PRD section 5 with the expanded payment and donation fields, ClubEvent and EventRegistration models, relationships, monthly dues allocation example, announcement permissions, and event registration rules.
 - **What I changed by hand and why:** I supplied the revised models, fields, relationships, and business requirements.
 - **How I checked it works:** Reviewed the updated PRD section and ran `git diff --check`; no tests were needed for this documentation change.
-- **Commit:** To be filled after committing.
+- **Commit:** `8bf11ed`
