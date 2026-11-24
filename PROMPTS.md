@@ -255,4 +255,4 @@
 - **What the AI produced:** Updated the log entries for the ERD and architecture diagram revisions with the supplied tool, prompts, output descriptions, and verification notes.
 - **What I changed by hand and why:** I supplied the historical prompt and diagram details to make the log more complete.
 - **How I checked it works:** Reviewed the updated entries and ran `git diff --check`.
-- **Commit:** To be filled after committing.
+- **Commit:** `b7451c7`
