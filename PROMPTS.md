@@ -1309,3 +1309,18 @@
 - **What I changed by hand and why:** I kept the `HasMany` import because User still has an announcements relationship. I retained the Demo User account used by the README, while removing the Notes records created for it.
 - **How I checked it works:** `php artisan migrate:fresh --seed` succeeded on the local SQLite database. Tinker confirmed the `notes` table is absent and four announcements are seeded. `php artisan test` passed all 25 tests. Pint passed for the seeder and routes; the `User.php` check reports pre-existing formatting issues, which I left unchanged.
 - **Commit:** `b5a9f4c`
+
+---
+
+### Step 63: Add the PaymentService (course Step 47)
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add PaymentService to validate selected dues, allocate payment amounts in satang without exceeding outstanding balances, reject already-paid months, save excess as donations, and wrap the complete operation in a database transaction. Verify donation, allocation, rollback, and partial-payment behavior; run tests; commit and record the hash.
+  ```
+- **What the AI produced:** Added the payment allocation service and focused tests for donations, partial payments, already-paid months, invalid member/month selection, and empty selection.
+- **What I changed by hand and why:** I added a service-level rejection for an empty `monthly_dues_ids` array. The PRD requires at least one selected month, and without the guard the service could save a donation-only payment.
+- **How I checked it works:** Tinker returned a ฿20 donation and ฿30 allocation from a ฿50 payment; a repeat for the paid month raised a validation error without increasing the payment count; a ฿10 partial payment had no donation. The four focused service tests passed, and `php artisan test` passed all 29 tests. Pint and `git diff --check` passed.
+- **Commit:** `430b866`
