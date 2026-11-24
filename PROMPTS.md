@@ -1189,3 +1189,18 @@
 - **What I changed by hand and why:** I kept payments append-only so the original financial record and its allocations remain auditable; any correction should use a future reversal workflow. The Treasurer creates dues records one member at a time to keep the action controlled and avoid unintended bulk changes. Only Admins can soft-delete members, preserving their payment history while limiting destructive account actions.
 - **How I checked it works:** `git diff --check` passed. Compared the endpoint names, access, and own-record routes with the permissions table. VS Code preview navigation and focus were interrupted by active user input, so I could not visually confirm the rendered tables.
 - **Commit:** `cdd14f6`
+
+---
+
+### Step 40: Correct PRD changelog dates to match commit history
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Replace the whole PRD section 10 changelog with the provided milestone summary, checking every date against git history. Commit the PRD change and log the hash.
+  ```
+- **What the AI produced:** Replaced the section 10 table with the assignment start, initial PRD/design work, database model and seeders, payment pivot/allocation changes, API and screen planning, level-up/full-CRUD planning, and ERD update.
+- **What I changed by hand and why:** I changed the proposed November 16 and 17 dates for implementation and API-plan work to November 24 because the relevant commits are dated November 24. I used November 12 and 15 for the earlier assignment and planning work, replacing the older changelog dates that did not match the repository history.
+- **How I checked it works:** Compared the milestones with `git log --format='%ad %s' --date=short`; `git diff --check` passed.
+- **Commit:** `5c53b63`
