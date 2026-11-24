@@ -994,3 +994,33 @@
 - **What I changed by hand and why:** I supplied the demo identities and profile fields. These known passwords are for local demo use only and must not be seeded into a live database.
 - **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker showed admin, treasurer, and member roles (plus the existing demo users) and returned `"S10001"` for the demo member's profile. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `56763ad`
+
+---
+
+### Step 42: Add the MonthlyDues factory
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  The requested seeder calls MonthlyDues::factory(), but no MonthlyDuesFactory exists. Add a factory with a member profile, month, year, and required amount so the seeder can create dues records.
+  ```
+- **What the AI produced:** Added `MonthlyDuesFactory` with a related member profile, a generated month, the current year, and the default dues amount.
+- **What I changed by hand and why:** I added this missing prerequisite because the requested seeder depends on `MonthlyDues::factory()->for($profile)`.
+- **How I checked it works:** The factory was exercised during `php artisan migrate:fresh --seed`; the seeder created 33 dues records across 11 profiles.
+- **Commit:** `a3df024`
+
+---
+
+### Step 43: Seed members with monthly dues
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Preserve the demo member profile as $demoProfile, create ten additional profiles, and seed September, October, and November 2026 dues for each profile using MonthlyDuesFactory. Rebuild the local database, verify counts and months, run the tests, commit the seeder, and log the hash.
+  ```
+- **What the AI produced:** Updated `DatabaseSeeder` to create 10 additional profiles and three explicitly dated 2026 dues records for each profile, including the demo member.
+- **What I changed by hand and why:** I specified the dues months and year so records are deterministic and don't collide on the profile/month/year unique key. Existing Notes seeding remains unchanged.
+- **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker returned 11 profiles, 33 dues records, months `9`, `10`, `11` for `S10001`, and 0 payments. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `5b7e2f0`
