@@ -514,7 +514,7 @@
 ### Step 20: Add the MemberProfile factory
 
 - **Date:** 2026-11-24
-- **Tool:** Copilot
+- **Tool:** Claude and Copilot
 - **Prompt:**
   ````text
   Replace the `definition()` method with the code below, then save:
@@ -533,7 +533,22 @@
   }
   ```
   ````
-- **What the AI produced:** Updated `MemberProfileFactory::definition()` to generate a related user, name, unique student ID, and optional phone number.
-- **What I changed by hand and why:** I supplied the requested factory definition.
-- **How I checked it works:** Ran `php -l database/factories/MemberProfileFactory.php`; no syntax errors were reported.
+- **What the AI produced:** `MemberProfileFactory` with `user_id` from `User::factory()`, a random `full_name`, a unique `student_id` like `S52443`, and an optional phone number.
+- **What I changed by hand and why:** Generated the file with `php artisan make:factory MemberProfileFactory --model=MemberProfile`, added the `User` import, replaced `definition()`, and saved. I kept `unique()` on `student_id` because that column is unique in the database, and `optional()` on `phone` because it is nullable.
+- **How I checked it works:** In Tinker, ran `App\Models\MemberProfile::factory()->create()`. It created a profile with a linked user, and `$p->user->name` and `$p->student_id` returned values. `phone` was `null` on that run, as expected because of `optional()`. Ran `php artisan test`: 16 passed.
 - **Commit:** `24396d0`
+
+---
+
+### Step 21: Create the monthly dues migration
+
+- **Date:** 2026-11-24
+- **Tool:** Not recorded
+- **Prompt:**
+  ```text
+  Original prompt not available in the recorded history. Current request: record this to prompt.md.
+  ```
+- **What the AI produced:** AI involvement is not recorded. The commit adds a `monthly_dues` migration with a member-profile foreign key, month and year, a default required amount of 30.00, timestamps, and a unique member/month/year constraint.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Ran `php -l database/migrations/2026_11_24_071325_create_monthly_dues_table.php`; no syntax errors were reported. `migrate:status` showed the migration as ran, but `db:table member_profiles` showed only `id`, `created_at`, and `updated_at`, so the database did not yet reflect the current migration definition.
+- **Commit:** `e195cd1`
