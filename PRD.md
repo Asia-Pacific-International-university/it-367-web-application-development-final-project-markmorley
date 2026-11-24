@@ -101,29 +101,25 @@ The system will use the following models to store and manage membership, dues, p
 
 | Model | Purpose | Example fields |
 | --- | --- | --- |
-| MemberProfile | Stores personal information about club members. | user_id, full_name, student_id, phone |
-| MonthlyDues | Tracks each member's monthly dues requirement and payment status. | member_profile_id, month, year, required_amount |
-| Payment | Stores individual dues payment transactions and identifies who recorded them. | monthly_dues_id, recorded_by_user_id, amount, dues_portion, payment_date, payment_method |
-| Donation | Stores the donation portion of a payment separately. | payment_id, amount |
+| User | Login account and role (admin, treasurer, member). | name, email, password, role |
+| MemberProfile | Stores personal information about club members. Soft deleted. | user_id, full_name, student_id, phone, deleted_at |
+| MonthlyDues | Tracks each member's dues requirement for one month. Unique per member, month and year. | member_profile_id, month, year, required_amount |
+| Payment | Stores one payment transaction made by a member and recorded by the treasurer. | member_profile_id, recorded_by_user_id, amount, payment_date, payment_method |
+| PaymentMonthlyDues (pivot) | Many-to-many link between a payment and the months it covers. Holds the part of the payment applied to each month. | payment_id, monthly_dues_id, allocated_amount |
+| Donation | Stores the excess part of a payment, calculated by the backend. | payment_id, amount |
 | Announcement | Stores announcements published by club officers. | author_user_id, title, message, published_at |
-| ClubEvent | Stores club events created by club officers. | created_by_user_id, title, description, event_date, location |
-| EventRegistration | Records a member's registration for a club event, including registration details. | member_profile_id, club_event_id, registered_at, status |
 
 The existing `User` model will store login information and each user's role.
 
 ### 5.2 Relationships
 
 - A User has one MemberProfile.
-- A MemberProfile can have many MonthlyDues records.
-- A MonthlyDues record can have many Payment records.
-- A User can record many Payment records as the Treasurer.
-- A Payment can have zero or one Donation record.
-- A User with the Club Officer / Admin role can publish many Announcements.
-- A User with the Club Officer / Admin role can create many ClubEvents.
-- A MemberProfile can register for many ClubEvents, and a ClubEvent can have many registered MemberProfiles. This many-to-many relationship is handled through the EventRegistration model.
-- Each EventRegistration belongs to one MemberProfile and one ClubEvent.
-
-The EventRegistration model is the pivot model for the many-to-many relationship. It stores additional information about the relationship, including the registration date and registration status.
+- A MemberProfile has many MonthlyDues records.
+- A MemberProfile has many Payments.
+- A Payment belongs to many MonthlyDues records, and a MonthlyDues record belongs to many Payments (many-to-many through `payment_monthly_dues`). The pivot stores `allocated_amount`, the part of the payment applied to that month.
+- A Payment has at most one Donation, which holds the amount above the allocated dues.
+- A User with the Treasurer role records many Payments (`recorded_by_user_id`).
+- A User with the Club Officer / Admin role publishes many Announcements (`author_user_id`).
 
 ### 5.3 Monthly Dues and Donations
 
