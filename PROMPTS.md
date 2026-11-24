@@ -549,6 +549,107 @@
   Original prompt not available in the recorded history. Current request: record this to prompt.md.
   ```
 - **What the AI produced:** AI involvement is not recorded. The commit adds a `monthly_dues` migration with a member-profile foreign key, month and year, a default required amount of 30.00, timestamps, and a unique member/month/year constraint.
-- **What I changed by hand and why:** Not recorded.
-- **How I checked it works:** Ran `php -l database/migrations/2026_11_24_071325_create_monthly_dues_table.php`; no syntax errors were reported. `migrate:status` showed the migration as ran, but `db:table member_profiles` showed only `id`, `created_at`, and `updated_at`, so the database did not yet reflect the current migration definition.
+- **What I changed by hand and why:** Generated the file with `make:migration`, pasted the code into `up()`, and saved it before running `migrate` because a previous migration had run with an empty `up()`.
+- **How I checked it works:** Ran `php artisan migrate`, then `php artisan db:table monthly_dues` and confirmed the 7 columns, unique index, and foreign key.
 - **Commit:** `e195cd1`
+
+---
+
+### Step 22: Add the MonthlyDues model
+
+- **Date:** 2026-11-24
+- **Tool:** Claude
+- **Prompt:**
+  ```text
+    Open app/Models/MonthlyDues.php, replace the contents with this, and save:
+
+  php
+  <?php
+
+  namespace App\Models;
+
+  use Illuminate\Database\Eloquent\Factories\HasFactory;
+  use Illuminate\Database\Eloquent\Model;
+  use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+  class MonthlyDues extends Model
+  {
+      use HasFactory;
+
+      protected $table = 'monthly_dues';
+
+      protected $fillable = [
+          'member_profile_id',
+          'month',
+          'year',
+          'required_amount',
+      ];
+
+      protected function casts(): array
+      {
+          return [
+              'month' => 'integer',
+              'year' => 'integer',
+              'required_amount' => 'decimal:2',
+          ];
+      }
+
+      public function memberProfile(): BelongsTo
+      {
+          return $this->belongsTo(MemberProfile::class);
+      }
+  }
+  ```
+- **What the AI produced:** The `MonthlyDues` Eloquent model with its table name, fillable fields, casts, and `memberProfile()` `belongsTo` relationship.
+- **What I changed by hand and why:** Replaced the contents of `app/Models/MonthlyDues.php` with the supplied model implementation and saved it.
+- **How I checked it works:** Ran `php -l app/Models/MonthlyDues.php`; no syntax errors were reported.
+- **Commit:** `e5c743b`
+
+---
+
+### Step 23: Add the monthlyDues relationship to MemberProfile
+
+- **Date:** 2026-11-24
+- **Tool:** Not recorded
+- **Prompt:**
+  ```text
+  Original prompt for adding this relationship is not available in the recorded history.
+  ```
+- **What the AI produced:** AI involvement is not recorded. The commit adds the `HasMany` import and a `monthlyDues()` relationship returning `$this->hasMany(MonthlyDues::class)`.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Ran `php -l app/Models/MemberProfile.php`; no syntax errors were reported.
+- **Commit:** `84c975a`
+
+---
+
+### Step 24: Add the payments migration
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ````text
+  Open the new file, replace `up()` with the code below, and **save before you run the migration**:
+
+  php
+
+  ```
+  public function up(): void
+  {
+      Schema::create('payments', function (Blueprint $table) {
+          $table->id();
+          $table->foreignId('member_profile_id')->constrained()->restrictOnDelete();
+          $table->foreignId('recorded_by_user_id')->constrained('users')->restrictOnDelete();
+          $table->decimal('amount', 8, 2);
+          $table->date('payment_date');
+          $table->string('payment_method');
+          $table->timestamps();
+
+          $table->index('payment_date');
+      });
+  }
+  ```
+  ````
+- **What the AI produced:** Updated the migration to create `payments` with member and recorder foreign keys, amount, payment date, payment method, timestamps, and a payment-date index.
+- **What I changed by hand and why:** I supplied the migration schema and asked for it to be saved before running the migration.
+- **How I checked it works:** Ran `php -l database/migrations/2026_11_24_074647_create_payments_table.php`; no syntax errors were reported. I did not run the migration as requested.
+- **Commit:** `d12c370`
