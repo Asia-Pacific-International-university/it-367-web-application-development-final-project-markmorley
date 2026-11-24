@@ -369,3 +369,127 @@
 - **What I changed by hand and why:** I supplied the revised models, fields, relationships, and business requirements.
 - **How I checked it works:** Reviewed the updated PRD section and ran `git diff --check`; no tests were needed for this documentation change.
 - **Commit:** `8bf11ed`
+
+---
+
+### Step 14: Create the user role migration scaffold
+
+- **Date:** 2026-11-24
+- **Tool:** Not recorded
+- **Prompt:**
+  ```text
+  No prompt is available in the recorded history for this commit.
+  ```
+- **What the AI produced:** AI involvement is not recorded. The commit adds the Laravel migration scaffold `2026_11_24_044317_add_role_to_users_table.php`; its `up` and `down` schema callbacks are empty in the committed version.
+- **What I changed by hand and why:** Not recorded for this commit.
+- **How I checked it works:** Not recorded in the commit history.
+- **Commit:** `f192f24`
+
+---
+
+### Step 15: Implement the user role migration
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot and Claude
+- **Prompt:**
+  ````text
+  Add this to database/migrations/2026_11_24_044317_add_role_to_users_table.php:
+  public function up(): void
+  {
+      Schema::table('users', function (Blueprint $table) {
+          $table->string('role')->default('member')->index();
+      });
+  }
+
+  public function down(): void
+  {
+      Schema::table('users', function (Blueprint $table) {
+          $table->dropColumn('role');
+      });
+  }
+  ````
+- **What the AI produced:** Updated the migration to add an indexed `role` string column defaulting to `member` and to drop the column on rollback.
+- **What I changed by hand and why:** it's worth recording that the first migration run had an empty up(), that you found it with migrate:status and db:table users, and that you fixed it and ran migrate:fresh.
+- **How I checked it works:** Ran `php -l` and `git diff --check` on the migration; both passed.
+- **Commit:** `70b2b43`
+
+---
+
+### Step 16: Add user role constants and helper
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot and Claude
+- **Prompt:**
+  ````text
+  Add the constants at the top of the class, just under the `use` line for the traits:
+
+  php
+
+  ```
+  public const ROLE_ADMIN = 'admin';
+  public const ROLE_TREASURER = 'treasurer';
+  public const ROLE_MEMBER = 'member';
+  ```
+
+  Add the helper below the `notes()` method:
+
+  php
+
+  ```
+  public function hasRole(string ...$roles): bool
+  {
+      return in_array($this->role, $roles, true);
+  }
+  ```
+  ````
+- **What the AI produced:** Added role constants for admin, treasurer, and member, plus a strict `hasRole()` helper to `User`.
+- **What I changed by hand and why:** I supplied the requested constants and helper implementation.
+- **How I checked it works:** Ran `php -l app/Models/User.php`; no syntax errors were reported.
+- **Commit:** `d1e7f13`
+
+---
+
+### Step 17: Create the member profiles migration
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ````text
+  Add this
+  public function up(): void
+  {
+      Schema::create('member_profiles', function (Blueprint $table) {
+          $table->id();
+          $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+          $table->string('full_name');
+          $table->string('student_id')->unique();
+          $table->string('phone')->nullable();
+          $table->softDeletes();
+          $table->timestamps();
+      });
+  }
+
+  public function down(): void
+  {
+      Schema::dropIfExists('member_profiles');
+  }
+  ````
+- **What the AI produced:** Added a migration that creates `member_profiles` with a unique, cascading `user_id`, unique `student_id`, contact fields, soft deletes, timestamps, and a rollback that drops the table.
+- **What I changed by hand and why:** I provided the requested schema and migration methods, I found the empty up() and fixed it with migrate:rollback..
+- **How I checked it works:** `php -l` passed. `migrate:status` showed the migration as ran, but `db:table member_profiles` showed only `id`, `created_at`, and `updated_at`; the database did not yet reflect the current migration definition.
+- **Commit:** `5f9fd31`
+
+---
+
+### Step 18: Add the MemberProfile model
+
+- **Date:** 2026-11-24
+- **Tool:** Not recorded
+- **Prompt:**
+  ```text
+  The original prompt for creating this model is not available in the recorded history. Current request: record this to prompts.md
+  ```
+- **What the AI produced:** AI involvement is not recorded. The commit adds the `MemberProfile` Eloquent model with fillable profile fields, soft deletes, and a `belongsTo` relationship to `User`.
+- **What I changed by hand and why:** Ran `php artisan make:model MemberProfile` without `-m`, because the `member_profiles` migration already existed. Replaced the generated class with a model that uses `SoftDeletes`, to match the `deleted_at` column from `softDeletes()`, and `HasFactory`, which I need for the factory in the next step. Set `$fillable` to `user_id`, `full_name`, `student_id` and `phone`. Added a `user()` `belongsTo` relationship. I did not make `role` or anything permission-related fillable on this model. I earlier kept `role` out of `User::$fillable`, so nobody can give themselves a role through mass assignment.
+- **How I checked it works:** Ran the Tinker, created a MemberProfile for the first user and confirmed $p->user->name returned the user's name. Ran php artisan test: 16 passed.
+- **Commit:** `1dd21e3`
