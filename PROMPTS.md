@@ -1159,3 +1159,18 @@
 - **What I changed by hand and why:** I chose in-memory token storage only to avoid persisting a bearer token; users must log in again after a refresh. I kept a simple dashboard for current-month status, totals, and announcements, leaving advanced charts for the level-up feature. Admin does not record payments because the permissions table and `POST /api/payments` reserve that action for the Treasurer.
 - **How I checked it works:** `git diff --check` passed. Compared each screen's API calls and role with section 6; Admin and Treasurer can use the own-history/dues endpoints when they have a member profile. The preview was open on the API endpoint tables, but scrolling to the new section 7 table was interrupted by active user input, so that table was not visually confirmed.
 - **Commit:** `257e638`
+
+---
+
+### Step 53: Pick level-up features from the menu
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Replace PRD section 8 with menu features for reports and charts, scheduled dues reminders, and frontend tests, totaling 20 points. Decide whether this mix fits and how reminders should reach members. Preview, commit, log the change, and check whether the host can run Laravel's scheduler.
+  ```
+- **What the AI produced:** Replaced the level-up feature table with Reports and charts (6 points), Queued jobs or scheduled tasks (8 points), and Frontend tests (6 points). Removed CSV/PDF exports unless approved by the instructor.
+- **What I changed by hand and why:** I kept this 20-point feature mix because it uses the full available points for reports, reminders, and frontend tests. Reminders will be in-app only; no email or SMS integration is planned.
+- **How I checked it works:** `git diff --check` passed. `php artisan schedule:list` reported no scheduled tasks yet. The local Windows Task Scheduler service is running and `schtasks.exe` is available, so local scheduling is possible. `DEPLOYMENT.md` does not identify a deployment provider, so deployed scheduler support still needs confirmation. Preview navigation to section 8 was interrupted by active user input, so I could not visually confirm the table.
+- **Commit:** `c25be5e`
