@@ -1114,3 +1114,18 @@
 - **What I changed by hand and why:** I chose to accept partial payments because several allocations can add up to the monthly requirement while the month remains unpaid. I chose to reject selecting an already-paid month rather than turn a duplicate dues selection into a donation; a payment must target dues that are still outstanding.
 - **How I checked it works:** `git diff --check` passed. Compared the documented payment, dues, pivot, and donation fields with their migrations, and confirmed the partial-payment and paid-status rules agree with section 5.3. The VS Code preview was open, but scrolling to the new table was interrupted by active user input, so its rendered appearance was not visually confirmed.
 - **Commit:** `55a1123`
+
+---
+
+### Step 50: Expand the role permissions table in the PRD
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Replace the permissions table in PRD section 2 with detailed role permissions, 401/403 behavior, and ownership/profile notes. Decide whether treasurers can manage members, whether members can edit student_id, and whether admins can prepare financial reports. Correct the registration note to match available endpoints, compare permissions to section 6, preview, commit, and log the change.
+  ```
+- **What the AI produced:** Expanded the permissions matrix and aligned the profile, dues, payment, member-removal, and announcement endpoint descriptions with it. Clarified that staff accounts are created by seeding only.
+- **What I changed by hand and why:** I kept Treasurer access to add and edit members because the club's existing permissions and member endpoints already allow it. Members cannot edit their own `student_id` because it identifies the membership record and should be set by an officer. Admins cannot prepare financial reports so access to reports stays limited to the Treasurer.
+- **How I checked it works:** `git diff --check` passed. Compared the permissions with the endpoint tables, including the all-authenticated own-profile/history/dues endpoints, admin-only soft deletion and draft access, and treasurer-only reports. The VS Code preview showed the updated table and notes rendered correctly.
+- **Commit:** `65381d4`
