@@ -1174,3 +1174,18 @@
 - **What I changed by hand and why:** I kept this 20-point feature mix because it uses the full available points for reports, reminders, and frontend tests. Reminders will be in-app only; no email or SMS integration is planned.
 - **How I checked it works:** `git diff --check` passed. `php artisan schedule:list` reported no scheduled tasks yet. The local Windows Task Scheduler service is running and `schtasks.exe` is available, so local scheduling is possible. `DEPLOYMENT.md` does not identify a deployment provider, so deployed scheduler support still needs confirmation. Preview navigation to section 8 was interrupted by active user input, so I could not visually confirm the table.
 - **Commit:** `c25be5e`
+
+---
+
+### Step 39: Name your 3 full-CRUD resources and the nested endpoint
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Update the PRD API plan so members, announcements, and monthly dues have full CRUD; keep payments create/read only; add a nested member-payments endpoint and query options for index routes. Align the dues permissions row, decide the three related business questions, preview, commit, and log the change.
+  ```
+- **What the AI produced:** Updated the member, monthly-dues, and payment endpoint tables; added the nested member-payments route and index query-options table; added the monthly-dues management permission.
+- **What I changed by hand and why:** I kept payments append-only so the original financial record and its allocations remain auditable; any correction should use a future reversal workflow. The Treasurer creates dues records one member at a time to keep the action controlled and avoid unintended bulk changes. Only Admins can soft-delete members, preserving their payment history while limiting destructive account actions.
+- **How I checked it works:** `git diff --check` passed. Compared the endpoint names, access, and own-record routes with the permissions table. VS Code preview navigation and focus were interrupted by active user input, so I could not visually confirm the rendered tables.
+- **Commit:** `cdd14f6`
