@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NoteController;
 use Illuminate\Support\Facades\Route;
@@ -22,4 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Example resource. Add your own resources below it.
     Route::apiResource('notes', NoteController::class);
+    Route::apiResource('announcements', AnnouncementController::class);
 });
