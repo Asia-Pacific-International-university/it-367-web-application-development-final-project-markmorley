@@ -1,8 +1,8 @@
 # PROMPTS.md: AI usage log
 
-**Student:** _your name_
-**Project:** _your app's name and one-line description_
-**AI tools used:** _e.g. ChatGPT, Claude, Copilot, Cursor_
+**Student:** Mark Michael Morley
+**Project:** Filipino Club Membership and Dues Management System: a Laravel 12 REST API with a Vue.js 3 frontend for managing club members, monthly ฿30 dues, payments, donations, and announcements.
+**AI tools used:** Claude _(ChatGPT, Copilot, Cursor)_
 
 ## Rules (from the assignment)
 
@@ -55,3 +55,204 @@
 ## My log
 
 <!-- Start your entries here. -->
+
+### Step 1: Initialize the Laravel project
+
+- **Date:** 2026-11-12
+- **Tool:** Not recorded
+- **Prompt:**
+  ```text
+  No prompt is recorded for this commit.
+  ```
+- **What the AI produced:** Not recorded. The commit contains the initial Laravel application, including API authentication and Notes examples, tests, configuration, and project documentation.
+- **What I changed by hand and why:** The commit history does not record which files were authored or edited by hand.
+- **How I checked it works:** Not recorded in the commit history.
+- **Commit:** `730bedb`
+
+---
+
+### Step 2: Add GitHub Classroom autograding
+
+- **Date:** 2026-11-12
+- **Tool:** GitHub Classroom setup; AI use not recorded
+- **Prompt:**
+  ```text
+  No prompt is recorded for this automated Classroom setup commit.
+  ```
+- **What the AI produced:** No AI output is recorded. The commit adds `.classroom50.yaml` and the GitHub Actions autograde workflow.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Not recorded in the commit history.
+- **Commit:** `ce9f040`
+
+---
+
+### Step 3: Add the problem statement and primary users
+
+- **Date:** 2026-11-15
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  ### 1. Problem and Users
+  The Filipino Club currently manages its membership information and dues payments using spreadsheets and manual records. This approach can make it difficult for club officers and the treasurer to keep track of which members have paid and which members still have outstanding dues. Payment records can also become scattered or difficult to find, making it time-consuming to prepare financial reports. In addition, members may have difficulty checking their own payment history. The Club Membership and Dues Management System will provide a centralized platform where club officers, the treasurer, and members can manage and access relevant membership and payment information more easily.
+
+  **Primary users:**
+
+  - **Club officers:** Manage club membership information and oversee membership and dues activities.
+  - **Treasurer:** Record and monitor dues payments, check unpaid balances, and prepare financial reports.
+  - **Members:** View their membership information and check their own payment history.
+
+  Put this in ## 1. Problem and User
+  ```
+- **What the AI produced:** Added the requested problem description and primary users to the PRD.
+- **What I changed by hand and why:** The problem statement and user descriptions came from my prompt. No separate manual edits are recorded for this commit.
+- **How I checked it works:** Reviewed the updated PRD section and the resulting diff; no tests were needed for this documentation change.
+- **Commit:** `d96d6ee`
+
+---
+
+### Step 4: Define roles, stories, business rules, and data model
+
+- **Date:** 2026-11-15
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  ## 5. Data Model
+  The system will use the following models to store and manage membership, dues, payments, donations, and announcements. The existing Laravel User model will handle user authentication and login accounts.
+
+  ### 5.1 Proposed Models
+  ModelPurposeExample FieldsMemberProfileStores personal information about club members.user_id, full_name, student_id, phoneMonthlyDuesTracks each member's monthly dues requirement and payment status.member_profile_id, month, year, required_amountPaymentStores individual dues payment transactions.monthly_dues_id, amount, payment_date, payment_methodDonationStores the donation portion of a payment separately.payment_id, amountAnnouncementStores announcements published by club officers.user_id, title, message, published_at
+  ### 5.2 Relationships
+
+  - A User has one MemberProfile.
+  - A MemberProfile can have many MonthlyDues records.
+  - A MonthlyDues record can have many Payment records.
+  - A Payment can have one Donation record.
+  - A User (Club Officer / Admin) can publish many Announcements.
+
+  ### 5.3 Monthly Dues and Donations
+  Each member must contribute at least ฿30 per month. The system will calculate the total contributions for each month.
+
+  - If the monthly total is at least ฿30, the member is marked as paid.
+  - If the monthly total is below ฿30, the member is marked as unpaid.
+  - Any amount above ฿30 is recorded as a donation.
+  - Extra contributions do not carry over to the following month.
+
+  ### 5.4 Announcement Management
+  Only users with the Club Officer / Admin role can create and publish announcements. Treasurers and members can view published announcements but cannot create or edit them.
+
+  Add this to no.5
+  ```
+- **What the AI produced:** Updated the PRD with user roles and permissions, ten user stories and acceptance criteria, business rules, five proposed models, relationships, monthly dues/donation rules, and announcement management. This commit combines several separate prompts; the code block shows the final request before the commit.
+- **What I changed by hand and why:** The requirements and model details were supplied in my requests. Any additional manual edits are not identified in the commit history.
+- **How I checked it works:** Reviewed the resulting PRD and commit diff; no tests were needed for this documentation change.
+- **Commit:** `e25e833`
+
+---
+
+### Step 5: Add the initial ERD
+
+- **Date:** 2026-11-15
+- **Tool:** Not recorded
+- **Prompt:**
+  ```text
+  No prompt is recorded for this diagram commit.
+  ```
+- **What the AI produced:** Not recorded. The commit adds `docs/erd.png`.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Not recorded in the commit history.
+- **Commit:** `7a84a3f`
+
+---
+
+### Step 6: Revise the ERD
+
+- **Date:** 2026-11-15
+- **Tool:** ChatGPT (diagram generated with Python)
+- **Prompt:**
+
+  ```
+  Revise the Filipino Club Membership and Dues Management System ERD to reflect the project requirements and relationships.
+  ```
+- **What the AI produced:** ChatGPT created a revised ERD diagram for the project. The diagram included users, member profiles, monthly dues, payments, donations, and announcements.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Not recorded. I should verify that the diagram opens correctly and that its entities and relationships match the approved PRD.
+- **Commit:** `e0c8905`
+
+---
+
+### Step 7: Add the initial architecture diagram
+
+- **Date:** 2026-11-15
+- **Tool:** ChatGPT (diagram generated with Python)
+- **Prompt:**
+
+  ```
+  Create an architecture diagram for the Filipino Club Membership and Dues Management System, showing the frontend, backend API, database, and hosting plan.
+  ```
+- **What the AI produced:** ChatGPT created an initial architecture diagram showing the frontend, Laravel REST API, database, and planned hosting arrangement.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Not recorded. I should verify that the diagram opens correctly and that it matches the technology choices and architecture described in the PRD.
+- **Commit:** `a210d62`
+
+---
+
+### Step 8: Revise the architecture diagram
+
+- **Date:** 2026-11-15
+- **Tool:** ChatGPT (diagram revised with Python)
+- **Prompt:**
+
+  ```
+  Update the architecture diagram to show that the project will use Vue.js 3 with Vite for the frontend and Laravel 12 for the REST API.
+  ```
+- **What the AI produced:** ChatGPT revised the architecture diagram to use Vue.js 3 with Vite for the frontend and Laravel 12 for the backend API. Hosting details remained planned or to be confirmed.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Not recorded. I should verify that the revised diagram opens correctly and reflects the technology choices in the PRD.
+- **Commit:** `5dcd6e0`
+
+---
+
+### Step 9: Add API, frontend, and project scope plans
+
+- **Date:** 2026-11-15
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  add this number 10:
+  ## 10. Changelog
+  DateChangesNovember 10, 2026Created the initial PRD and identified the problem, current management process, and primary users.November 11, 2026Defined user roles, permissions, and the main user stories for the system.November 12, 2026Added business rules for monthly dues, payment methods, and donations.November 13, 2026Designed the initial data model and created the ERD and architecture diagrams.November 14, 2026Selected Vue.js 3 with Vite for the frontend and updated the frontend architecture.November 15, 2026Added the API plan, level-up features, and out-of-scope requirements.
+  ```
+- **What the AI produced:** Added the Laravel 12/Sanctum API plan and endpoint tables, Vue 3/Vite frontend plan, level-up features, out-of-scope requirements, and changelog. The commit also includes the architecture diagram reference. This commit combines several separate prompts; the code block shows the final request before the commit.
+- **What I changed by hand and why:** The requirements and wording came from my prompts. Any additional manual edits are not identified in the commit history.
+- **How I checked it works:** Reviewed the updated PRD and commit diff; no tests were needed for this documentation change.
+- **Commit:** `5652c57`
+
+---
+
+### Step 10: Update the ERD diagram
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot (the commit includes a Copilot co-author trailer)
+- **Prompt:**
+  ```text
+  The exact prompt for this diagram update is not recorded in the available history.
+  ```
+- **What the AI produced:** The commit updates `docs/erd.png`; the specific AI contribution is not recorded.
+- **What I changed by hand and why:** Not recorded.
+- **How I checked it works:** Not recorded in the commit history.
+- **Commit:** `f7dc7b2`
+
+---
+
+### Step 11: Record diagram prompts and revisions
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  commit and push this while also recording this in this file
+  ```
+- **What the AI produced:** Updated the log entries for the ERD and architecture diagram revisions with the supplied tool, prompts, output descriptions, and verification notes.
+- **What I changed by hand and why:** I supplied the historical prompt and diagram details to make the log more complete.
+- **How I checked it works:** Reviewed the updated entries and ran `git diff --check`.
+- **Commit:** To be filled after committing.
