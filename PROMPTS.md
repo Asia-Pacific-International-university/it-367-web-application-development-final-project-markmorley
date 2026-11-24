@@ -1249,3 +1249,18 @@
 - **What I changed by hand and why:** I kept `author_user_id` out of both requests so the controller can assign the author from the authenticated admin rather than trusting client input. The update rules use `sometimes` so a request can change just one field.
 - **How I checked it works:** Tinker returned `false` for valid store input and `["title"]` for invalid input. `php artisan test` passed all 20 tests. Pint and `git diff --check` passed. Update authorization will be exercised after its route is added in the next step.
 - **Commit:** `4259224`
+
+---
+
+### Step 59: Add AnnouncementController and apiResource routes
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add AnnouncementController with paginated listing, draft filtering for non-admins, policy checks, eager-loaded author resources, and CRUD actions. Register its apiResource inside the Sanctum group, verify the five generated routes, run tests, and record the commit hash.
+  ```
+- **What the AI produced:** Added the announcement controller and five authenticated API resource routes.
+- **What I changed by hand and why:** I kept the draft filter in the index query because `viewAny` only authorizes access to the list; it does not automatically apply `view` to each row. Filtering at the query prevents drafts from being included in non-admin responses.
+- **How I checked it works:** `php artisan route:list --path=api/announcements` showed the expected five routes. `php artisan test` passed all 20 tests. Pint and `git diff --check` passed.
+- **Commit:** `83d4fb4`
