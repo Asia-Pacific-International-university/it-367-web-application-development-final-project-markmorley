@@ -782,3 +782,80 @@
 - **What I changed by hand and why:** Added the state helper so `PaymentFactory` can generate a treasurer as the payment recorder.
 - **How I checked it works:** `php -l` passed for `UserFactory.php`; a Tinker smoke check returned the `treasurer` role, and all 16 tests passed.
 - **Commit:** `47bbd7d`
+
+---
+
+### Step 29: Add the payment-monthly-dues pivot migration
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ````text
+  Open the new file, replace `up()` with the code below, and **save before you run the migration**:
+
+  php
+
+  ```
+  public function up(): void
+  {
+      Schema::create('payment_monthly_dues', function (Blueprint $table) {
+          $table->id();
+          $table->foreignId('payment_id')->constrained()->cascadeOnDelete();
+          $table->foreignId('monthly_dues_id')->constrained('monthly_dues')->restrictOnDelete();
+          $table->decimal('allocated_amount', 8, 2);
+          $table->timestamps();
+
+          $table->unique(['payment_id', 'monthly_dues_id']);
+      });
+  }
+  ```
+  ````
+- **What the AI produced:** Updated the migration to create `payment_monthly_dues` with payment and monthly-dues foreign keys, an `allocated_amount`, timestamps, and a unique constraint across both foreign keys.
+- **What I changed by hand and why:** I supplied the migration schema and requested that it be saved before running the migration.
+- **How I checked it works:** Ran `php -l database/migrations/2026_11_24_080501_create_payment_monthly_dues_table.php`; no syntax errors were reported. I did not run the migration as requested.
+- **Commit:** `09120f1`
+
+---
+
+### Step 30: Add the monthly dues relationship to Payment
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add a Payment::monthlyDues() many-to-many relationship using the payment_monthly_dues pivot, its explicit foreign keys, allocated_amount, and timestamps. Verify it in Tinker, run the tests, commit the model change, and log the work here. Explain what withPivot does.
+  ```
+- **What the AI produced:** Added `Payment::monthlyDues()` using the explicit pivot table and key names, with `allocated_amount` and pivot timestamps.
+- **What I changed by hand and why:** I specified the relationship implementation and validation steps. `withPivot('allocated_amount')` tells Eloquent to include that extra pivot column on each related dues model, so callers can read it as `$due->pivot->allocated_amount`; without it, the custom pivot value is not available on the loaded pivot model. `withTimestamps()` keeps the pivot's timestamp columns updated.
+- **How I checked it works:** The Tinker check linked the first payment and dues record if not already linked and returned `30` for the pivot allocation. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `d30a884`
+
+---
+
+### Step 31: Add the payments relationship to MonthlyDues
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add MonthlyDues::payments() as a many-to-many relationship using payment_monthly_dues, with monthly_dues_id as this model's pivot key and payment_id as the related model's pivot key. Include allocated_amount and pivot timestamps. Verify the allocation from both relationship directions, run the tests, commit the model change, and log the commit hash.
+  ```
+- **What the AI produced:** Added `MonthlyDues::payments()` with the pivot keys in the reverse order from `Payment::monthlyDues()`, and included the allocation column and pivot timestamps.
+- **What I changed by hand and why:** I specified the relationship's key order and validation steps. The first pivot key, `monthly_dues_id`, references the current `MonthlyDues` model; the second, `payment_id`, references `Payment`.
+- **How I checked it works:** Tinker showed one linked record and the same `30` allocation when reading from a payment to its dues and from the dues to its payments. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `fca3701`
+
+---
+
+### Step 32: Add the donations migration
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Create the donations table with a unique payment_id foreign key that cascades on delete, an amount decimal(8, 2), and timestamps. Run the migration and inspect the table with db:table. Commit the migration and log it in PROMPTS.md.
+  ```
+- **What the AI produced:** Added a migration that creates `donations` with an id, unique payment foreign key, exact decimal amount, and timestamps.
+- **What I changed by hand and why:** I specified the schema. `payment_id` is unique so one payment can have at most one donation. The donation cascades with its payment because it represents that payment's excess and has no independent meaning; in contrast, a payment's member-profile foreign key restricts deleting a profile that still has payment records. I left `DECISIONS.md` unchanged at the user's direction.
+- **How I checked it works:** `php -l` reported no syntax errors, `php artisan migrate` completed, and `php artisan db:table donations` showed five columns (`id`, `payment_id`, `amount`, `created_at`, `updated_at`), a unique index on `payment_id`, and a foreign key to `payments` with cascade on delete.
+- **Commit:** `aa6829a`
