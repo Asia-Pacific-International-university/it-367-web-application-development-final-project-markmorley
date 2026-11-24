@@ -1279,3 +1279,33 @@
 - **What I changed by hand and why:** I kept the supplied assertions intact so failures would expose problems in the policy, requests, resource, or controller rather than being hidden by weakened tests.
 - **How I checked it works:** `php artisan test --filter=AnnouncementApiTest` passed all 13 tests (40 assertions). `php artisan test` passed all 33 tests (109 assertions). Pint and `git diff --check` passed.
 - **Commit:** `771ccb1`
+
+---
+
+### Step 61: Remove the Notes example API layer
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Remove the Notes example controller, requests, resource, policy, and tests. Remove its import and route, run the tests, and commit this as Commit A without rewriting history.
+  ```
+- **What the AI produced:** Removed the six Notes API files and its authenticated resource route. Updated the README to describe the announcement API and current feature tests instead of the removed Notes example.
+- **What I changed by hand and why:** I removed the obsolete example-route comment and updated the README because it would otherwise refer to deleted Notes files and an outdated test count.
+- **How I checked it works:** `php artisan route:list --path=api/notes` found no matching routes. `php artisan test` passed all 25 remaining tests.
+- **Commit:** `841586a`
+
+---
+
+### Step 62: Remove the Notes data layer and seeder data
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Remove the Note model, factory, and migration; remove the notes() relationship and Notes seeder data. Keep the HasMany import, rebuild the local database with migrate:fresh --seed, run the tests, and commit separately as Commit B.
+  ```
+- **What the AI produced:** Removed the Notes model, factory, and migration; deleted the `notes()` relationship and Notes seeding.
+- **What I changed by hand and why:** I kept the `HasMany` import because User still has an announcements relationship. I retained the Demo User account used by the README, while removing the Notes records created for it.
+- **How I checked it works:** `php artisan migrate:fresh --seed` succeeded on the local SQLite database. Tinker confirmed the `notes` table is absent and four announcements are seeded. `php artisan test` passed all 25 tests. Pint passed for the seeder and routes; the `User.php` check reports pre-existing formatting issues, which I left unchanged.
+- **Commit:** `b5a9f4c`
