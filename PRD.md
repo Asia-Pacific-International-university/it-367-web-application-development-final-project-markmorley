@@ -158,9 +158,14 @@ The system will use a Laravel 12 REST API to handle communication between the Vu
 
 | Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
+| POST | `/api/register` | Public | Create a new account with the Member role and return an access token. Body: `name`, `email`, `password`, `password_confirmation`. The role is always set to `member` by the backend and is never read from the request. |
 | POST | `/api/login` | Public | Authenticate a user and return an access token. |
 | POST | `/api/logout` | Authenticated users | Log out the current user and revoke their token. |
 | GET | `/api/user` | Authenticated users | Return the current user's account information and role. |
+
+Registration and login are rate limited to 6 attempts per minute per IP address. Officer and treasurer accounts are not created through registration. They are created by seeding or by an admin changing a user's role.
+
+Newly registered members do not automatically receive a MemberProfile; an officer or treasurer must create one before member-specific dues or payment records can be associated with the account.
 
 ### 6.2 Member Management Endpoints
 
