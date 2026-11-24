@@ -1144,3 +1144,18 @@
 - **What I changed by hand and why:** I kept Admin access to the payment list because the permissions table and `GET /api/payments` both allow it. I chose 10 records per page because it matches the starter Notes example and will be consistent when I build the controllers.
 - **How I checked it works:** `git diff --check` passed. Compared the criteria with the permissions table and API endpoint access, including Admin payment-list access and Treasurer-only reports. The VS Code preview displayed the nested acceptance list correctly.
 - **Commit:** `5b02b84`
+
+---
+
+### Step 52: Expand frontend screens with roles and API calls
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Replace the Main Screens list in PRD section 7 with a role-aware screen table, API calls, navigation behavior, loading/empty/error states, and token handling. Decide token storage, dashboard scope, and whether Admin records payments. Compare every call with section 6, preview, commit, and log the change.
+  ```
+- **What the AI produced:** Replaced the short screen list with an 11-screen table and documented role-based routing, request states, and token behavior.
+- **What I changed by hand and why:** I chose in-memory token storage only to avoid persisting a bearer token; users must log in again after a refresh. I kept a simple dashboard for current-month status, totals, and announcements, leaving advanced charts for the level-up feature. Admin does not record payments because the permissions table and `POST /api/payments` reserve that action for the Treasurer.
+- **How I checked it works:** `git diff --check` passed. Compared each screen's API calls and role with section 6; Admin and Treasurer can use the own-history/dues endpoints when they have a member profile. The preview was open on the API endpoint tables, but scrolling to the new section 7 table was interrupted by active user input, so that table was not visually confirmed.
+- **Commit:** `257e638`
