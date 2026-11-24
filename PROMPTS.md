@@ -706,3 +706,29 @@
 - **What I changed by hand and why:** I supplied the requested model implementation.
 - **How I checked it works:** Ran `php -l app/Models/Payment.php`; no syntax errors were reported.
 - **Commit:** `1436a9b`
+
+---
+
+### Step 26: Add the payments relationship to MemberProfile
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ````text
+  Edit `app/Models/MemberProfile.php`
+
+  The `HasMany` import is already there from step 10, so you only need to add this method below `monthlyDues()`, then **save**:
+
+  php
+
+  ```
+  public function payments(): HasMany
+  {
+      return $this->hasMany(Payment::class);
+  }
+  ```
+  ````
+- **What the AI produced:** Added a `payments()` `HasMany` relationship returning `$this->hasMany(Payment::class)`.
+- **What I changed by hand and why:** I requested the relationship method beneath `monthlyDues()`; the `HasMany` import was already present.
+- **How I checked it works:** Ran `php -l app/Models/MemberProfile.php`; no syntax errors were reported.
+- **Commit:** `8627016`
