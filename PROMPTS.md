@@ -1024,3 +1024,18 @@
 - **What I changed by hand and why:** I specified the dues months and year so records are deterministic and don't collide on the profile/month/year unique key. Existing Notes seeding remains unchanged.
 - **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker returned 11 profiles, 33 dues records, months `9`, `10`, `11` for `S10001`, and 0 payments. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `5b7e2f0`
+
+---
+
+### Step 44: Seed payments with allocations and donations
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  For each dues record, seed a payment recorded by the treasurer and allocate 30, leaving every third member's November unpaid. Every second member's October payment is 50; create a donation for any amount above the 30 allocation. Rebuild the local database, verify payment/donation/allocation/unpaid counts, run the tests, commit the seeder, and log the hash.
+  ```
+- **What the AI produced:** Updated `DatabaseSeeder` to create payments, allocate 30 to each paid month, and record donations for overpayments without carrying the excess into another month.
+- **What I changed by hand and why:** A donation is the positive remainder after subtracting the amount applied to dues from the total payment. Here, a 50 payment allocates 30 to October and records the remaining 20 as a donation; it does not reduce a later month's dues.
+- **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker returned 29 payments, 6 donations, 29 allocations, and 4 dues records without payments. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `e210eb0`
