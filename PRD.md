@@ -283,14 +283,23 @@ The frontend will communicate with the Laravel 12 REST API to retrieve and manag
 
 ### Main Screens
 
-1. Login page
-2. Admin dashboard
-3. Member management
-4. Payment management
-5. Monthly dues tracking
-6. Financial reports
-7. Announcements
-8. Member profile and payment history
+The router sends a user without a token to the login page. A user who opens a screen their role cannot use is sent to their own home screen. The backend still enforces every permission, so hiding a screen is only a convenience.
+
+| # | Screen | Who sees it | API calls | What it shows and does |
+| --- | --- | --- | --- | --- |
+| 1 | Login and register | Everyone, logged out | `POST /api/login`, `POST /api/register` | Email and password form. Shows the server's error message under the field at fault. After login, goes to the user's home screen. |
+| 2 | Dashboard | Admin, Treasurer | `GET /api/monthly-dues`, `GET /api/payments`, `GET /api/announcements` | Counts of paid and unpaid members for the current month, the total collected, and the latest announcements. |
+| 3 | Member list | Admin, Treasurer | `GET /api/members` | Table of members, 10 per page, with a search box and previous and next buttons. A button opens the member form. |
+| 4 | Member form | Admin, Treasurer | `POST /api/members`, `PUT /api/members/{id}` | Create or edit a member. Validation errors appear beside each field. |
+| 5 | Record payment | Treasurer | `GET /api/members`, `GET /api/monthly-dues`, `POST /api/payments` | Choose a member, then tick the months it covers. Enter amount, date and method (cash or bank transfer). After saving, shows how the amount was split between dues and donation. |
+| 6 | Payment records | Admin, Treasurer | `GET /api/payments` | Paginated table with filters for date range and member. Each row shows the member, amount, method, months covered and donation. |
+| 7 | Dues status | Admin, Treasurer | `GET /api/monthly-dues` | Pick a month and see each member as paid or unpaid with the allocated total. A filter shows unpaid members only. |
+| 8 | Financial reports | Treasurer | `GET /api/reports/monthly`, `GET /api/reports/annual` | Choose a month or a year and see total dues, total donations and paid and unpaid counts. |
+| 9 | Announcements | Everyone logged in | `GET /api/announcements`, `GET /api/announcements/{id}`, `POST /api/announcements`, `PUT /api/announcements/{id}`, `DELETE /api/announcements/{id}` | Published announcements, newest first. Admin also sees drafts and has create, edit and delete buttons. |
+| 10 | My profile | Everyone logged in | `GET /api/profile`, `PUT /api/profile` | Shows the user's details. Full name and phone are editable. Student ID is read-only. |
+| 11 | My payments and dues | Any logged-in user with a member profile (including Admin and Treasurer) | `GET /api/my/payments`, `GET /api/my/monthly-dues` | The user's own payment history and each month's paid or unpaid status. |
+
+Every screen that loads data shows three states: a loading message while the request runs, an empty message when the list has no rows, and an error message with a retry button when the request fails. The token is kept in memory only; refreshing the page requires the user to log in again. A `401` response sends the user back to the login page.
 
 ## 8. Level-up Features
 
