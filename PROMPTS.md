@@ -889,3 +889,18 @@
 - **What I changed by hand and why:** I specified `hasOne` because the unique `donations.payment_id` column allows at most one donation for each payment.
 - **How I checked it works:** Tinker returned `"10.00"` for a payment with a donation and `null` for a payment without one. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `d44f6bf`
+
+---
+
+### Step 35: Add the Donation factory
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Create DonationFactory for Donation with a Payment factory for payment_id and a random amount from [5, 10, 20, 50]. Verify the generated donation and its payment's member profile in Tinker, run the tests, commit the factory, and log the hash.
+  ```
+- **What the AI produced:** Added `DonationFactory`, which creates a related payment and selects a sample donation amount.
+- **What I changed by hand and why:** I specified the related `Payment` factory and realistic test/demo amounts. These sample amounts are not guaranteed to match a payment's excess; the future PaymentService and seeder will be responsible for that business calculation.
+- **How I checked it works:** Tinker created a donation with amount `"10.00"` and returned member profile ID `5` through its related payment. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `43d4137`
