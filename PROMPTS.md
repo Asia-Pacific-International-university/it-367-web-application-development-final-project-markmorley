@@ -904,3 +904,18 @@
 - **What I changed by hand and why:** I specified the related `Payment` factory and realistic test/demo amounts. These sample amounts are not guaranteed to match a payment's excess; the future PaymentService and seeder will be responsible for that business calculation.
 - **How I checked it works:** Tinker created a donation with amount `"10.00"` and returned member profile ID `5` through its related payment. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `43d4137`
+
+---
+
+### Step 36: Add the announcements migration
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Create an announcements table with an author_user_id foreign key to users that restricts deletion, a title, text message, nullable indexed published_at, and timestamps. Run the migration, inspect it with db:table, commit the migration, and log the hash.
+  ```
+- **What the AI produced:** Added the announcements migration with author, content, publication timestamp, and created/updated timestamp columns.
+- **What I changed by hand and why:** I specified the schema. `author_user_id` explicitly references `users`; deletion is restricted to preserve announcements if an author account is removed. `message` uses text for longer content, and nullable `published_at` supports drafts.
+- **How I checked it works:** `php -l` passed, `php artisan migrate` completed, and `php artisan db:table announcements` showed 7 columns (`id`, `author_user_id`, `title`, `message`, `published_at`, `created_at`, `updated_at`), an index on `published_at`, and a `users` foreign key with restrict on delete.
+- **Commit:** `a04ed3d`
