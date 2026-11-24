@@ -1129,3 +1129,18 @@
 - **What I changed by hand and why:** I kept Treasurer access to add and edit members because the club's existing permissions and member endpoints already allow it. Members cannot edit their own `student_id` because it identifies the membership record and should be set by an officer. Admins cannot prepare financial reports so access to reports stays limited to the Treasurer.
 - **How I checked it works:** `git diff --check` passed. Compared the permissions with the endpoint tables, including the all-authenticated own-profile/history/dues endpoints, admin-only soft deletion and draft access, and treasurer-only reports. The VS Code preview showed the updated table and notes rendered correctly.
 - **Commit:** `65381d4`
+
+---
+
+### Step 51: Expand acceptance criteria with failure cases
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Replace the acceptance criteria in PRD section 3 with detailed success, validation, authorization, privacy, pagination, filtering, and empty-report cases for US01-US10. Decide whether admins can view payments and whether lists use 10 per page. Compare the criteria with the permissions and endpoints, preview, commit, and log the change.
+  ```
+- **What the AI produced:** Expanded the acceptance criteria for all ten user stories with response codes, validation outcomes, access limits, payment/dues behavior, pagination, and filtering.
+- **What I changed by hand and why:** I kept Admin access to the payment list because the permissions table and `GET /api/payments` both allow it. I chose 10 records per page because it matches the starter Notes example and will be consistent when I build the controllers.
+- **How I checked it works:** `git diff --check` passed. Compared the criteria with the permissions table and API endpoint access, including Admin payment-list access and Treasurer-only reports. The VS Code preview displayed the nested acceptance list correctly.
+- **Commit:** `5b02b84`
