@@ -1054,3 +1054,18 @@
 - **What I changed by hand and why:** I specified the admin author and draft title. Supplying the author ID prevents the factory from creating a separate admin for each announcement.
 - **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker returned 4 announcements, 3 with `published_at`, and 4 announcements for the admin. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `a03b89c`
+
+---
+
+### Step 46: Update the PRD data model for the payment-dues pivot
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Replace PRD sections 5.1 and 5.2 with the current models and relationships: include User and its role; MemberProfile soft deletion; Payment's member_profile_id and recorded_by_user_id; PaymentMonthlyDues with payment_id, monthly_dues_id, and allocated_amount; Donation; Announcement with author_user_id; and the payment-to-monthly-dues many-to-many relationship.
+  ```
+- **What the AI produced:** Updated the proposed model table and relationship list to document the current payment, dues-allocation, donation, and announcement schema.
+- **What I changed by hand and why:** I replaced Payment's outdated `monthly_dues_id` and `dues_portion` fields with `member_profile_id` and documented the new `PaymentMonthlyDues` pivot keys and `allocated_amount`. I also added User role fields, MemberProfile's `deleted_at`, and the author/payment fields for Donation and Announcement, and updated the relationships to show the many-to-many dues allocation. The pivot's `allocated_amount` records how much of a payment applies to a particular dues month, allowing a payment to be split across months and dues totals to be distinguished from excess donations.
+- **How I checked it works:** Compared the documented field and foreign-key names against the users, member_profiles, monthly_dues, payments, payment_monthly_dues, donations, and announcements migrations. The VS Code preview attempt was interrupted by active user input.
+- **Commit:** `3d0049c`
