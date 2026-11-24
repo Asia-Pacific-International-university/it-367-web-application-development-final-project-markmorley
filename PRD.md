@@ -28,17 +28,31 @@ The Filipino Club currently manages its membership information and dues payments
 
 ### Permissions table
 
+Anything marked "No" returns `403 Forbidden`. A request with no valid token returns `401 Unauthorized`.
+
 | Feature / Permission | Club Officer / Admin | Treasurer | Member |
 | --- | --- | --- | --- |
 | View member list | Yes | Yes | No |
+| View one member's details | Yes | Yes | Own profile only |
 | Add new members | Yes | Yes | No |
-| Edit member information | Yes | Yes | No |
+| Edit any member's information | Yes | Yes | No |
+| Edit own profile (full name, phone) | Yes | Yes | Yes |
+| Remove a member (soft delete) | Yes | No | No |
 | Record payments | No | Yes | No |
 | View all payment records | Yes | Yes | No |
+| View own payment history | Yes | Yes | Yes |
+| View all monthly dues and paid/unpaid status | Yes | Yes | No |
+| View own monthly dues | Yes | Yes | Yes |
+| View donations | Yes | Yes | No |
 | Prepare financial reports | No | Yes | No |
-| View personal payment history | Yes | Yes | Yes |
-| Manage own profile | Yes | Yes | Yes |
-| Publish announcements | Yes | No | No |
+| View published announcements | Yes | Yes | Yes |
+| View draft announcements | Yes | No | No |
+| Create, edit and delete announcements | Yes | No | No |
+
+Notes:
+- "Own" means the record linked to the logged-in user's member profile. A user with no member profile has no own payments or dues to see.
+- A member cannot change their own `student_id` or `role`. Those are set by an officer.
+- The backend enforces every row with Policies. Hiding a button in the frontend is not security.
 
 ## 3. User Stories
 
@@ -179,7 +193,7 @@ The system will use a Laravel 12 REST API to handle communication between the Vu
 | POST | `/api/logout` | Authenticated users | Log out the current user and revoke their token. |
 | GET | `/api/user` | Authenticated users | Return the current user's account information and role. |
 
-Registration and login are rate limited to 6 attempts per minute per IP address. Officer and treasurer accounts are not created through registration. They are created by seeding or by an admin changing a user's role.
+Registration and login are rate limited to 6 attempts per minute per IP address. Officer and treasurer accounts are not created through registration. They are created by seeding only.
 
 Newly registered members do not automatically receive a MemberProfile; an officer or treasurer must create one before member-specific dues or payment records can be associated with the account.
 
@@ -191,8 +205,9 @@ Newly registered members do not automatically receive a MemberProfile; an office
 | POST | `/api/members` | Admin, Treasurer | Create a new member account and profile. |
 | GET | `/api/members/{id}` | Admin, Treasurer | View a specific member's information. |
 | PUT | `/api/members/{id}` | Admin, Treasurer | Update a member's information. |
-| GET | `/api/profile` | Member | View the current member's own profile. |
-| PUT | `/api/profile` | Member | Update the current member's own profile. |
+| DELETE | `/api/members/{id}` | Admin | Soft-delete a member profile. |
+| GET | `/api/profile` | All authenticated users | View the logged-in user's own profile. |
+| PUT | `/api/profile` | All authenticated users | Update the logged-in user's own profile (`full_name`, `phone`). |
 
 ### 6.3 Monthly Dues Endpoints
 
@@ -200,7 +215,7 @@ Newly registered members do not automatically receive a MemberProfile; an office
 | --- | --- | --- | --- |
 | GET | `/api/monthly-dues` | Admin, Treasurer | View monthly dues records and payment statuses. |
 | GET | `/api/monthly-dues/{id}` | Admin, Treasurer | View the details of a monthly dues record. |
-| GET | `/api/my/monthly-dues` | Member | View the current member's own monthly dues and payment status. |
+| GET | `/api/my/monthly-dues` | All authenticated users | View the logged-in user's own monthly dues and payment status (requires a member profile). |
 
 ### 6.4 Payment Endpoints
 
@@ -209,7 +224,7 @@ Newly registered members do not automatically receive a MemberProfile; an office
 | GET | `/api/payments` | Admin, Treasurer | View all payment records. |
 | POST | `/api/payments` | Treasurer | Record a payment for a registered member. Body: `member_profile_id`, `amount`, `payment_date`, `payment_method` (`cash` or `bank_transfer`), `monthly_dues_ids` (array of the months it covers). The backend sets `recorded_by_user_id` from the logged-in treasurer, then calculates the allocations and any donation. |
 | GET | `/api/payments/{id}` | Admin, Treasurer | View payment details. |
-| GET | `/api/my/payments` | Member | View the current member's own payment history. |
+| GET | `/api/my/payments` | All authenticated users | View the logged-in user's own payment history (requires a member profile). |
 
 Example response: `201 Created` with the payment, its `monthly_dues` (each with `allocated_amount`) and its `donation` (or `null`).
 
@@ -226,17 +241,18 @@ Example response: `201 Created` with the payment, its `monthly_dues` (each with 
 | Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
 | GET | `/api/announcements` | All authenticated users | View published club announcements. |
-| GET | `/api/announcements/{id}` | All authenticated users | View a specific announcement. |
+| GET | `/api/announcements/{id}` | All authenticated users (published); Admin (published or draft) | View a specific announcement. |
 | POST | `/api/announcements` | Admin | Publish a new announcement. |
 | PUT | `/api/announcements/{id}` | Admin | Edit an announcement. |
 | DELETE | `/api/announcements/{id}` | Admin | Delete an announcement. |
 
 ### 6.7 API Security and Validation
 
-- Users must log in before accessing protected API endpoints.
+- Users must log in before accessing protected API endpoints. Requests without a valid token return `401 Unauthorized`.
 - Laravel Sanctum will handle authentication using access tokens.
-- The API will check user roles before allowing restricted actions.
-- Members can only view and update their own profile and payment information.
+- Laravel Policies will enforce role permissions and record ownership. A forbidden action returns `403 Forbidden`.
+- All authenticated users can only view and update their own profile; profile edits are limited to `full_name` and `phone`.
+- Own payment and dues endpoints return only records linked to the logged-in user's member profile.
 - Only the Treasurer can record payments.
 - Only the Admin can publish, edit, or delete announcements.
 - Payment amounts, dates, and payment methods will be validated by the Laravel backend.
