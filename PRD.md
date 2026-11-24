@@ -93,6 +93,22 @@ The Filipino Club currently manages its membership information and dues payments
 
 **BR05 – Excess contributions:** Any amount contributed above the required ฿30 for a month must be recorded as a donation. Excess contributions cannot be carried forward to satisfy the next month's dues.
 
+### 4.1 What happens when a rule is broken
+
+| Rule | Situation | Response | Result |
+| --- | --- | --- | --- |
+| BR01 | A member or admin tries to record a payment | `403 Forbidden` | Nothing is saved. |
+| BR01 | A request has no valid token | `401 Unauthorized` | Nothing is saved. |
+| BR02 | The member does not exist | `422` with an error on `member_profile_id` | Nothing is saved. |
+| BR02 | The amount is zero, negative or not a number | `422` with an error on `amount` | Nothing is saved. |
+| BR02 | The payment date is missing or invalid | `422` with an error on `payment_date` | Nothing is saved. |
+| BR02 | The payment method is not `cash` or `bank_transfer` | `422` with an error on `payment_method` | Nothing is saved. |
+| BR02 | `monthly_dues_ids` is empty, or a month belongs to a different member | `422` with an error on `monthly_dues_ids` | Nothing is saved. |
+| BR03 / BR04 | A payment is below ฿30 for a month | `201 Created` | The payment is saved and allocated. The month stays unpaid until its allocations reach ฿30. |
+| BR04 | A selected month is already fully paid | `422` with an error on `monthly_dues_ids` | Nothing is saved, so the same month is not paid twice. |
+| BR05 | A payment is above what selected months still owe | `201 Created` | The excess is saved as a Donation. It is not carried to the next month. |
+| BR05 | A request includes an `allocated_amount` or donation amount | Ignored | The backend always calculates both. |
+
 ## 5. Data Model
 
 The system will use the following models to store and manage membership, dues, payments, donations, announcements, and club events.
@@ -125,7 +141,7 @@ The existing `User` model will store login information and each user's role.
 
 Each member must contribute at least ฿30 per month (`required_amount`). A payment is not tied to one month. The treasurer chooses which months a payment covers, and the backend splits the amount:
 
-1. For each selected month, in order, the backend works out what is still outstanding: `required_amount` minus the `allocated_amount` already recorded for that month.
+1. For each selected month, in order, the backend rejects the request if that month is already fully paid. Otherwise, it works out what is still outstanding: `required_amount` minus the `allocated_amount` already recorded for that month.
 2. It allocates the smaller of the outstanding amount and what is left of the payment, and stores it in `payment_monthly_dues.allocated_amount`.
 3. Whatever is left after all selected months are covered is saved as a Donation: `donation = payment.amount − sum(allocated_amount)`. No Donation row is created when the result is zero.
 
