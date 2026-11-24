@@ -93,9 +93,9 @@ The Filipino Club currently manages its membership information and dues payments
 
 **BR05 – Excess contributions:** Any amount contributed above the required ฿30 for a month must be recorded as a donation. Excess contributions cannot be carried forward to satisfy the next month's dues.
 
-## 5. Data model
+## 5. Data Model
 
-The system will use the following models to store and manage membership, dues, payments, donations, and announcements. The existing Laravel User model will handle user authentication and login accounts.
+The system will use the following models to store and manage membership, dues, payments, donations, announcements, and club events.
 
 ### 5.1 Proposed Models
 
@@ -103,30 +103,49 @@ The system will use the following models to store and manage membership, dues, p
 | --- | --- | --- |
 | MemberProfile | Stores personal information about club members. | user_id, full_name, student_id, phone |
 | MonthlyDues | Tracks each member's monthly dues requirement and payment status. | member_profile_id, month, year, required_amount |
-| Payment | Stores individual dues payment transactions. | monthly_dues_id, amount, payment_date, payment_method |
+| Payment | Stores individual dues payment transactions and identifies who recorded them. | monthly_dues_id, recorded_by_user_id, amount, dues_portion, payment_date, payment_method |
 | Donation | Stores the donation portion of a payment separately. | payment_id, amount |
-| Announcement | Stores announcements published by club officers. | user_id, title, message, published_at |
+| Announcement | Stores announcements published by club officers. | author_user_id, title, message, published_at |
+| ClubEvent | Stores club events created by club officers. | created_by_user_id, title, description, event_date, location |
+| EventRegistration | Records a member's registration for a club event, including registration details. | member_profile_id, club_event_id, registered_at, status |
+
+The existing `User` model will store login information and each user's role.
 
 ### 5.2 Relationships
 
 - A User has one MemberProfile.
 - A MemberProfile can have many MonthlyDues records.
 - A MonthlyDues record can have many Payment records.
-- A Payment can have one Donation record.
-- A User (Club Officer / Admin) can publish many Announcements.
+- A User can record many Payment records as the Treasurer.
+- A Payment can have zero or one Donation record.
+- A User with the Club Officer / Admin role can publish many Announcements.
+- A User with the Club Officer / Admin role can create many ClubEvents.
+- A MemberProfile can register for many ClubEvents, and a ClubEvent can have many registered MemberProfiles. This many-to-many relationship is handled through the EventRegistration model.
+- Each EventRegistration belongs to one MemberProfile and one ClubEvent.
+
+The EventRegistration model is the pivot model for the many-to-many relationship. It stores additional information about the relationship, including the registration date and registration status.
 
 ### 5.3 Monthly Dues and Donations
 
-Each member must contribute at least ฿30 per month. The system will calculate the total contributions for each month.
+Each member must contribute at least ฿30 per month. The system will calculate the total contributions for each member for that month.
 
-- If the monthly total is at least ฿30, the member is marked as paid.
-- If the monthly total is below ฿30, the member is marked as unpaid.
-- Any amount above ฿30 is recorded as a donation.
+- If the monthly amount applied to dues reaches at least ฿30, the member is marked as paid.
+- If the monthly amount applied to dues is below ฿30, the member is marked as unpaid.
+- If a member contributes more than the remaining amount needed to reach ฿30 in a month, the excess is recorded as a donation.
 - Extra contributions do not carry over to the following month.
+- Financial reports will show dues and donations separately.
+
+The system will calculate the dues portion across all payments for that member and month. For example, if a member pays ฿20 and later pays another ฿20 in the same month, ฿30 is applied to dues and the remaining ฿10 is recorded as a donation.
 
 ### 5.4 Announcement Management
 
-Only users with the Club Officer / Admin role can create and publish announcements. Treasurers and members can view published announcements but cannot create or edit them.
+Only users with the Club Officer / Admin role can create, edit, or delete announcements. Treasurers and members can view published announcements but cannot create, edit, or delete them.
+
+### 5.5 Club Event Registration
+
+Club officers can create club events. Members can register for events and view their own registrations. Each registration will store the registration date and status.
+
+The system will prevent a member from registering for the same event more than once. Event registration records will be stored in the EventRegistration model, which connects MemberProfile and ClubEvent and includes the additional pivot fields `registered_at` and `status`.
 
 ![ERD](docs/erd.png)
 ![ERD](docs/architecture.png)

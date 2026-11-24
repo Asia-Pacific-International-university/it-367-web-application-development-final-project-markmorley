@@ -255,4 +255,117 @@
 - **What the AI produced:** Updated the log entries for the ERD and architecture diagram revisions with the supplied tool, prompts, output descriptions, and verification notes.
 - **What I changed by hand and why:** I supplied the historical prompt and diagram details to make the log more complete.
 - **How I checked it works:** Reviewed the updated entries and ran `git diff --check`.
-- **Commit:** `b7451c7`
+- **Commit:** `b7451c7` (follow-up hash record: `de5516a`)
+
+---
+
+### Step 12: Correct the architecture diagram log entries
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ````text
+  ### Step 7: Add the initial architecture diagram
+
+  - **Date:** 2026-11-15
+  - **Tool:** ChatGPT and Python
+  - **Prompt:**
+
+  ```
+  check whether the architecture diagram for my Filipino Club Membership and Dues Management System, showing the frontend, backend API, database, and hosting plan fits my prd.
+  ```
+  - **What the AI produced:** ChatGPT helped check the initial architecture diagram based on the project requirements I provided.
+  - **What I changed by hand and why:** I reviewed the diagram against my PRD and identified the technologies and hosting details that needed to be represented. Any specific manual edits should be recorded here.
+  - **How I checked it works:** I checked that the diagram file opened and reviewed whether its components matched the architecture described in my PRD.
+  - **Commit:** `a210d62`
+
+  ---
+
+  ### Step 8: Revise the architecture diagram
+
+  - **Date:** 2026-11-15
+  - **Tool:** ChatGPT and Python
+  - **Prompt:**
+
+  ```
+  Update my architecture diagram to show Vue.js 3 with Vite as the frontend and Laravel 12 as the REST API backend.
+  ```
+  - **What the AI produced:** ChatGPT helped revise the architecture diagram to reflect my decision to use Vue.js 3 with Vite for the frontend and Laravel 12 for the backend API.
+  - **What I changed by hand and why:** I chose Vue.js 3 with Vite for the frontend and requested that the diagram reflect this decision. Record any additional edits you made directly to the diagram here.
+  - **How I checked it works:** I reviewed the updated diagram to confirm that it showed Vue.js 3 with Vite and Laravel 12, and that it matched my PRD.
+  - **Commit:** `5dcd6e0`
+
+  ---
+
+  change my step 7 and 8
+  ````
+- **What the AI produced:** Revised the Step 7 and Step 8 entries with the supplied prompts, tool details, descriptions, and verification notes.
+- **What I changed by hand and why:** I supplied the corrected prompt text and descriptions for both diagram steps.
+- **How I checked it works:** Reviewed the updated entries and ran `git diff --check`.
+- **Commit:** `4822f3b`
+
+---
+
+### Step 13: Revise data model and event registration requirements
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  add this to number five since I revised this:
+  ### 5.1 Proposed Models
+
+  Model | Purpose | Example fields
+
+  MemberProfile | Stores personal information about club members. | user_id, full_name, student_id, phone
+
+  MonthlyDues | Tracks each member's monthly dues requirement and payment status. | member_profile_id, month, year, required_amount
+
+  Payment | Stores individual dues payment transactions and identifies who recorded them. | monthly_dues_id, recorded_by_user_id, amount, dues_portion, payment_date, payment_method
+
+  Donation | Stores the donation portion of a payment separately. | payment_id, amount
+
+  Announcement | Stores announcements published by club officers. | author_user_id, title, message, published_at
+
+  ClubEvent | Stores club events created by club officers. | created_by_user_id, title, description, event_date, location
+
+  EventRegistration | Records a member's registration for a club event, including registration details. | member_profile_id, club_event_id, registered_at, status
+  The existing `User` model will store login information and each user's role.
+
+  ### 5.2 Relationships
+
+  - A User has one MemberProfile.
+  - A MemberProfile can have many MonthlyDues records.
+  - A MonthlyDues record can have many Payment records.
+  - A User can record many Payment records as the Treasurer.
+  - A Payment can have zero or one Donation record.
+  - A User with the Club Officer / Admin role can publish many Announcements.
+  - A User with the Club Officer / Admin role can create many ClubEvents.
+  - A MemberProfile can register for many ClubEvents, and a ClubEvent can have many registered MemberProfiles. This many-to-many relationship is handled through the EventRegistration model.
+  - Each EventRegistration belongs to one MemberProfile and one ClubEvent.
+  The EventRegistration model is the pivot model for the many-to-many relationship. It stores additional information about the relationship, including the registration date and registration status.
+
+  ### 5.3 Monthly Dues and Donations
+  Each member must contribute at least ฿30 per month. The system will calculate the total contributions for each member for that month.
+
+  - If the monthly amount applied to dues reaches at least ฿30, the member is marked as paid.
+  - If the monthly amount applied to dues is below ฿30, the member is marked as unpaid.
+  - If a member contributes more than the remaining amount needed to reach ฿30 in a month, the excess is recorded as a donation.
+  - Extra contributions do not carry over to the following month.
+  - Financial reports will show dues and donations separately.
+  The system will calculate the dues portion across all payments for that member and month. For example, if a member pays ฿20 and later pays another ฿20 in the same month, ฿30 is applied to dues and the remaining ฿10 is recorded as a donation.
+
+  ### 5.4 Announcement Management
+  Only users with the Club Officer / Admin role can create, edit, or delete announcements. Treasurers and members can view published announcements but cannot create, edit, or delete them.
+
+  ### 5.5 Club Event Registration
+  Club officers can create club events. Members can register for events and view their own registrations. Each registration will store the registration date and status.
+
+  The system will prevent a member from registering for the same event more than once. Event registration records will be stored in the EventRegistration model, which connects MemberProfile and ClubEvent and includes the additional pivot fields `registered_at` and `status`.
+
+  and record this commit and push in the prompts.md file
+  ```
+- **What the AI produced:** Revised PRD section 5 with the expanded payment and donation fields, ClubEvent and EventRegistration models, relationships, monthly dues allocation example, announcement permissions, and event registration rules.
+- **What I changed by hand and why:** I supplied the revised models, fields, relationships, and business requirements.
+- **How I checked it works:** Reviewed the updated PRD section and ran `git diff --check`; no tests were needed for this documentation change.
+- **Commit:** To be filled after committing.
