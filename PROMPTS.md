@@ -934,3 +934,18 @@
 - **What I changed by hand and why:** I specified the model structure. The relationship uses `author_user_id` because the default key inferred from `author()` would be `author_id`. Although fillable, the author ID must be set from the authenticated user by the controller, not accepted from request data.
 - **How I checked it works:** Tinker created an announcement and returned its author's name and publication date `2026-11-24`. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `62474bb`
+
+---
+
+### Step 38: Add the announcements relationship to User
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add User::announcements() as a HasMany relationship using author_user_id. Verify the first user's announcement count and title in Tinker, run the tests, commit the model change, and log the hash.
+  ```
+- **What the AI produced:** Added `User::announcements()` using the explicit `author_user_id` foreign key.
+- **What I changed by hand and why:** I specified the relationship and key. The explicit key is needed because Laravel would otherwise infer `user_id` from the related table.
+- **How I checked it works:** Tinker returned count `1` and title `"Welcome"` for the first user. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `90cbdb7`
