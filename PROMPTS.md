@@ -493,3 +493,47 @@
 - **What I changed by hand and why:** Ran `php artisan make:model MemberProfile` without `-m`, because the `member_profiles` migration already existed. Replaced the generated class with a model that uses `SoftDeletes`, to match the `deleted_at` column from `softDeletes()`, and `HasFactory`, which I need for the factory in the next step. Set `$fillable` to `user_id`, `full_name`, `student_id` and `phone`. Added a `user()` `belongsTo` relationship. I did not make `role` or anything permission-related fillable on this model. I earlier kept `role` out of `User::$fillable`, so nobody can give themselves a role through mass assignment.
 - **How I checked it works:** Ran the Tinker, created a MemberProfile for the first user and confirmed $p->user->name returned the user's name. Ran php artisan test: 16 passed.
 - **Commit:** `1dd21e3`
+
+---
+
+### Step 19: Add memberProfile relationship to User
+
+- **Date:** 2026-11-24
+- **Tool:** Claude
+- **Prompt:**
+  ```text
+  Original prompt not available in the recorded history. The commit message was: Add memberProfile relationship to User model.
+  ```
+- **What the AI produced:** The `memberProfile()` `hasOne` relationship and the `HasOne` import for `User`.
+- **What I changed by hand and why:** I added the import and the method to `User.php`, below `notes()` and above `hasRole()`, and saved the file. I chose to keep this relationship next to the other relationships and not touch `$fillable`. I understand that `Model::preventLazyLoading` is on in `AppServiceProvider`, so any controller that lists users needs `->with('memberProfile')`.
+- **How I checked it works:** In Tinker I ran `App\Models\User::first()->memberProfile->full_name` and got "Test Member". I ran `php artisan test` and all 16 tests passed.
+- **Commit:** `9a511a7`
+
+---
+
+### Step 20: Add the MemberProfile factory
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ````text
+  Replace the `definition()` method with the code below, then **save**:
+
+  php
+
+  ```
+  public function definition(): array
+  {
+      return [
+          'user_id' => User::factory(),
+          'full_name' => fake()->name(),
+          'student_id' => fake()->unique()->numerify('S#####'),
+          'phone' => fake()->optional()->numerify('08########'),
+      ];
+  }
+  ```
+  ````
+- **What the AI produced:** Updated `MemberProfileFactory::definition()` to generate a related user, name, unique student ID, and optional phone number.
+- **What I changed by hand and why:** I supplied the requested factory definition.
+- **How I checked it works:** Ran `php -l database/factories/MemberProfileFactory.php`; no syntax errors were reported.
+- **Commit:** `24396d0`
