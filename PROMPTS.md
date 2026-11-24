@@ -874,3 +874,18 @@
 - **What I changed by hand and why:** I specified the model structure and validation steps. The amount is represented as an exact decimal, and the payment relationship resolves the donation's owning payment.
 - **How I checked it works:** Tinker returned `"10.00"` for the donation amount and `"30.00"` for the related payment amount. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `7222021`
+
+---
+
+### Step 34: Add the donation relationship to Payment
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add Payment::donation() as a HasOne relationship to Donation. Verify a payment with a donation returns it and a payment without a donation returns null, run the tests, commit the model change, and log the commit hash.
+  ```
+- **What the AI produced:** Added the `HasOne` import and `Payment::donation()` relationship.
+- **What I changed by hand and why:** I specified `hasOne` because the unique `donations.payment_id` column allows at most one donation for each payment.
+- **How I checked it works:** Tinker returned `"10.00"` for a payment with a donation and `null` for a payment without one. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `d44f6bf`
