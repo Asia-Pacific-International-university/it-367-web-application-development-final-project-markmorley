@@ -1084,3 +1084,18 @@
 - **What I changed by hand and why:** For each selected month, subtract existing allocations from its required dues and allocate only what is still owed, up to the payment amount left. After processing the selected months, any payment remainder becomes a donation and is not carried into another month.
 - **How I checked it works:** `git diff --check` passed. Compared the rules with `DatabaseSeeder`: a 50 payment allocates 30 to dues and records the remaining 20 as a donation. Opened the VS Code preview, but navigating to the edited sections was interrupted by active user input, so their rendered appearance was not visually confirmed.
 - **Commit:** `f599895`
+
+---
+
+### Step 48: Add POST /api/register to the API plan
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add a public POST /api/register endpoint to PRD section 6.1, documenting the member-only role and request fields. Add the registration/login rate-limit note and explain what happens to a new registrant's member profile. Preview, commit, and log the change.
+  ```
+- **What the AI produced:** Added the registration endpoint, rate-limit and account-creation note, and new-registrant profile behavior to the PRD.
+- **What I changed by hand and why:** I chose Option A: a new registrant has no MemberProfile until an officer or treasurer creates one. This keeps public registration limited to login-account details and leaves member-profile creation with the club staff who manage membership information.
+- **How I checked it works:** `git diff --check` passed. Confirmed the registration row appears above login in section 6.1 and the rate-limit and profile notes follow the table. The VS Code preview was open, but navigating to section 6.1 was interrupted by active user input, so the rendered section was not visually confirmed.
+- **Commit:** `b5510e9`
