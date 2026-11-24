@@ -64,6 +64,11 @@ class User extends Authenticatable
     return $this->hasOne(MemberProfile::class);
     }
 
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(Announcement::class, 'author_user_id');
+    }
+
     public function hasRole(string ...$roles): bool
     {
         return in_array($this->role, $roles, true);
