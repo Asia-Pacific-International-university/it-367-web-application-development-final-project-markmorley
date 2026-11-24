@@ -344,9 +344,11 @@ These limitations will help keep the project focused on its main purpose: managi
 
 | Date | Changes |
 | --- | --- |
-| November 10, 2026 | Created the initial PRD and identified the problem, current management process, and primary users. |
-| November 11, 2026 | Defined user roles, permissions, and the main user stories for the system. |
-| November 12, 2026 | Added business rules for monthly dues, payment methods, and donations. |
-| November 13, 2026 | Designed the initial data model and created the ERD and architecture diagrams. |
-| November 14, 2026 | Selected Vue.js 3 with Vite for the frontend and updated the frontend architecture. |
-| November 15, 2026 | Added the API plan, level-up features, and out-of-scope requirements. |
+| November 12, 2026 | Accepted the GitHub Classroom assignment and started from the starter project. |
+| November 15, 2026 | Wrote the problem statement and primary users, roles and permissions, user stories, business rules and the first data model. |
+| November 15, 2026 | Created the first ERD and architecture diagram, chose Vue.js 3 with Vite, and added the API plan, level-up ideas and out-of-scope list. |
+| November 24, 2026 | Built the data model in the database: users with roles, member profiles, monthly dues, payments, donations and announcements, with seeders. |
+| November 24, 2026 | Changed the data model: payments now belong to a member, and a many-to-many pivot (`payment_monthly_dues`) holds `allocated_amount`. Updated the allocation and donation rules in section 5.3. |
+| November 24, 2026 | Added `POST /api/register`, error behavior for each business rule, the expanded permissions table, acceptance criteria with failure cases and the frontend screen plan. |
+| November 24, 2026 | Picked the level-up features (reports and charts, scheduled reminders, frontend tests) and defined the three full-CRUD resources, the nested endpoint and the index query options. |
+| November 24, 2026 | Updated the ERD to show the pivot table. |
