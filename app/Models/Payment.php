@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Payment extends Model
 {
@@ -42,5 +43,10 @@ class Payment extends Model
         return $this->belongsToMany(MonthlyDues::class, 'payment_monthly_dues', 'payment_id', 'monthly_dues_id')
             ->withPivot('allocated_amount')
             ->withTimestamps();
+    }
+
+    public function donation(): HasOne
+    {
+        return $this->hasOne(Donation::class);
     }
 }
