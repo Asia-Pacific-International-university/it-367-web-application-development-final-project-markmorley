@@ -35,7 +35,7 @@
 
 ## Example entry
 
-### Step 3: Product model and migration
+### Example: Product model and migration
 
 - **Date:** 2026-11-12
 - **Tool:** ChatGPT
@@ -1177,7 +1177,7 @@
 
 ---
 
-### Step 39: Name your 3 full-CRUD resources and the nested endpoint
+### Step 54: Name your 3 full-CRUD resources and the nested endpoint
 
 - **Date:** 2026-11-24
 - **Tool:** Copilot
@@ -1192,7 +1192,7 @@
 
 ---
 
-### Step 40: Correct PRD changelog dates to match commit history
+### Step 55: Correct PRD changelog dates to match commit history
 
 - **Date:** 2026-11-24
 - **Tool:** Copilot
