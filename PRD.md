@@ -43,6 +43,7 @@ Anything marked "No" returns `403 Forbidden`. A request with no valid token retu
 | View own payment history | Yes | Yes | Yes |
 | View all monthly dues and paid/unpaid status | Yes | Yes | No |
 | View own monthly dues | Yes | Yes | Yes |
+| Create, edit and delete monthly dues records | No | Yes | No |
 | View donations | Yes | Yes | No |
 | Prepare financial reports | No | Yes | No |
 | View published announcements | Yes | Yes | Yes |
@@ -213,36 +214,50 @@ Registration and login are rate limited to 6 attempts per minute per IP address.
 
 Newly registered members do not automatically receive a MemberProfile; an officer or treasurer must create one before member-specific dues or payment records can be associated with the account.
 
-### 6.2 Member Management Endpoints
+### 6.2 Member Management Endpoints (full CRUD)
 
 | Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
-| GET | `/api/members` | Admin, Treasurer | Retrieve the list of registered members. |
-| POST | `/api/members` | Admin, Treasurer | Create a new member account and profile. |
-| GET | `/api/members/{id}` | Admin, Treasurer | View a specific member's information. |
-| PUT | `/api/members/{id}` | Admin, Treasurer | Update a member's information. |
-| DELETE | `/api/members/{id}` | Admin | Soft-delete a member profile. |
-| GET | `/api/profile` | All authenticated users | View the logged-in user's own profile. |
-| PUT | `/api/profile` | All authenticated users | Update the logged-in user's own profile (`full_name`, `phone`). |
+| GET | `/api/members` | Admin, Treasurer | List members, paginated, with search and sort. |
+| POST | `/api/members` | Admin, Treasurer | Create a member account and profile. |
+| GET | `/api/members/{member}` | Admin, Treasurer | View one member. |
+| PUT | `/api/members/{member}` | Admin, Treasurer | Update a member. |
+| DELETE | `/api/members/{member}` | Admin | Soft delete a member. Their payments are kept. |
+| GET | `/api/members/{member}/payments` | Admin, Treasurer | Nested endpoint: one member's payments. |
+| GET | `/api/profile` | Any logged-in user | View the logged-in user's own profile. |
+| PUT | `/api/profile` | Any logged-in user | Update own full name and phone. |
 
-### 6.3 Monthly Dues Endpoints
-
-| Method | Endpoint | Access | Purpose |
-| --- | --- | --- | --- |
-| GET | `/api/monthly-dues` | Admin, Treasurer | View monthly dues records and payment statuses. |
-| GET | `/api/monthly-dues/{id}` | Admin, Treasurer | View the details of a monthly dues record. |
-| GET | `/api/my/monthly-dues` | All authenticated users | View the logged-in user's own monthly dues and payment status (requires a member profile). |
-
-### 6.4 Payment Endpoints
+### 6.3 Monthly Dues Endpoints (full CRUD)
 
 | Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
-| GET | `/api/payments` | Admin, Treasurer | View all payment records. |
-| POST | `/api/payments` | Treasurer | Record a payment for a registered member. Body: `member_profile_id`, `amount`, `payment_date`, `payment_method` (`cash` or `bank_transfer`), `monthly_dues_ids` (array of the months it covers). The backend sets `recorded_by_user_id` from the logged-in treasurer, then calculates the allocations and any donation. |
-| GET | `/api/payments/{id}` | Admin, Treasurer | View payment details. |
-| GET | `/api/my/payments` | All authenticated users | View the logged-in user's own payment history (requires a member profile). |
+| GET | `/api/monthly-dues` | Admin, Treasurer | List dues records with paid or unpaid status, filterable by month, year, status and member. |
+| POST | `/api/monthly-dues` | Treasurer | Create a month's dues record for a member. A repeated member, month and year returns `422`. |
+| GET | `/api/monthly-dues/{monthly_due}` | Admin, Treasurer | View one record with its payments and allocated amounts. |
+| PUT | `/api/monthly-dues/{monthly_due}` | Treasurer | Change the required amount. |
+| DELETE | `/api/monthly-dues/{monthly_due}` | Treasurer | Delete a record. Blocked with `422` if any payment is allocated to it. |
+| GET | `/api/my/monthly-dues` | Any logged-in user | View the logged-in user's own dues and status. |
 
-Example response: `201 Created` with the payment, its `monthly_dues` (each with `allocated_amount`) and its `donation` (or `null`).
+### 6.4 Payment Endpoints (create and read only)
+
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/payments` | Admin, Treasurer | List payments, paginated, with filters and sort. |
+| POST | `/api/payments` | Treasurer | Record a payment (body and rules as in section 5.3). |
+| GET | `/api/payments/{payment}` | Admin, Treasurer | View one payment with its months, allocations and donation. |
+| GET | `/api/my/payments` | Any logged-in user | View the logged-in user's own payment history. |
+
+Payments have no update or delete endpoint. A recorded payment is a financial record and is never edited or removed, so the allocations and donations always add up.
+
+### 6.4.1 Index query options
+
+Options can be combined, for example `?search=ana&sort=-created_at&page=2`.
+
+| Endpoint | Options |
+| --- | --- |
+| `GET /api/members` | `search` (name or student ID), `sort` (`full_name`, `created_at`, prefix `-` for descending), `page` |
+| `GET /api/payments` | `member_id`, `payment_method`, `from` and `to` (payment date), `sort` (`payment_date`, `amount`, prefix `-` for descending), `page` |
+| `GET /api/monthly-dues` | `month`, `year`, `status` (`paid` or `unpaid`), `member_id`, `page` |
 
 ### 6.5 Donation and Financial Report Endpoints
 
