@@ -979,3 +979,18 @@
 - **What I changed by hand and why:** I specified the factory attributes and the `draft()` state for creating unpublished announcements.
 - **How I checked it works:** Tinker returned `"admin"` and a Carbon publication date for a published announcement, and `null` for a draft. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `1dbc7c2`
+
+---
+
+### Step 41: Seed demo users for each role
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add fixed local demo users for admin, treasurer, and member roles, and create a member profile for the demo member with student ID S10001. Preserve the existing Notes seeding. Rebuild and seed the local database, verify the roles and profile in Tinker, run the tests, commit the seeder, and log the hash.
+  ```
+- **What the AI produced:** Updated `DatabaseSeeder` to seed the requested role accounts and member profile before the existing demo user and Notes data.
+- **What I changed by hand and why:** I supplied the demo identities and profile fields. These known passwords are for local demo use only and must not be seeded into a live database.
+- **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker showed admin, treasurer, and member roles (plus the existing demo users) and returned `"S10001"` for the demo member's profile. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `56763ad`
