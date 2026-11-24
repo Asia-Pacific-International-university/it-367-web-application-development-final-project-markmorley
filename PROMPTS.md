@@ -1204,3 +1204,18 @@
 - **What I changed by hand and why:** I changed the proposed November 16 and 17 dates for implementation and API-plan work to November 24 because the relevant commits are dated November 24. I used November 12 and 15 for the earlier assignment and planning work, replacing the older changelog dates that did not match the repository history.
 - **How I checked it works:** Compared the milestones with `git log --format='%ad %s' --date=short`; `git diff --check` passed.
 - **Commit:** `5c53b63`
+
+---
+
+### Step 56: Add AnnouncementPolicy
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add AnnouncementPolicy so any authenticated user can list announcements, published announcements are visible to all, drafts are admin-only, and only admins can create, update, or delete. Verify the Gate decisions in Tinker, run the test suite, commit, and log the change.
+  ```
+- **What the AI produced:** Added the automatically discovered `AnnouncementPolicy` and focused feature tests for list, visibility, and write permissions.
+- **What I changed by hand and why:** I kept drafts hidden from non-admins so only admins can preview unpublished announcements; other users should see an announcement only after it has been published.
+- **How I checked it works:** Tinker returned `true`, `false`, `false`, `true` for the requested Gate checks. `php artisan test` passed all 19 tests. Pint and `git diff --check` passed.
+- **Commit:** `760346a`
