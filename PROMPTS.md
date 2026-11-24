@@ -1339,3 +1339,18 @@
 - **What I changed by hand and why:** I kept the requested checks for allocation totals, donation amounts, validation errors, unchanged database state after rejected payments, and the treasurer/member IDs associated with a payment.
 - **How I checked it works:** `php artisan test --filter=PaymentServiceTest` passed all 9 tests (23 assertions). `php artisan test` passed all 34 tests (103 assertions). Pint and `git diff --check` passed.
 - **Commit:** `3bdda27`
+
+---
+
+### Step 65: Add the payment Policy, Form Request and Resource (course Step 49)
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add PaymentPolicy, StorePaymentRequest, and PaymentResource. Restrict create to treasurers, allow admins and treasurers to view all payments and members to view only their own, validate payment fields and selected dues, and expose only the intended payment/member/treasurer/allocation/donation data. Verify Gate decisions and validation errors, run tests, commit, and note the hash.
+  ```
+- **What the AI produced:** Added the payment access policy, payment creation validation request, and explicit API resource.
+- **What I changed by hand and why:** I kept update and delete undefined in the policy because payments are append-only financial records. I made a loaded-but-absent donation serialize as `null`, so partial-payment responses match PaymentService behavior.
+- **How I checked it works:** Tinker returned `true`, `false`, `false`, `false` for the create/view/update Gate checks and validation errors for amount, method, and empty monthly dues. The resource included member and treasurer names without email and returned `donation: null` when absent. `php artisan test` passed all 34 tests. Pint and `git diff --check` passed.
+- **Commit:** `4e6ca71`
