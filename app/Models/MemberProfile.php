@@ -28,4 +28,9 @@ class MemberProfile extends Model
     {
         return $this->hasMany(MonthlyDues::class);
     }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
