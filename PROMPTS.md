@@ -1219,3 +1219,18 @@
 - **What I changed by hand and why:** I kept drafts hidden from non-admins so only admins can preview unpublished announcements; other users should see an announcement only after it has been published.
 - **How I checked it works:** Tinker returned `true`, `false`, `false`, `true` for the requested Gate checks. `php artisan test` passed all 19 tests. Pint and `git diff --check` passed.
 - **Commit:** `760346a`
+
+---
+
+### Step 57: Add AnnouncementResource
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add AnnouncementResource with an explicit JSON field list, an is_draft flag, and author id/name only when the author relation is loaded. Verify loaded and unloaded author serialization in Tinker, run the tests, commit, and log the change.
+  ```
+- **What the AI produced:** Added the announcement JSON resource and a feature test covering conditional author inclusion and email omission.
+- **What I changed by hand and why:** I kept the author behind `whenLoaded` so serializing an announcement without eager loading does not trigger a lazy load or N+1 query. The API only includes the author's id and name when the relation is intentionally loaded.
+- **How I checked it works:** Tinker showed the loaded author's id and name without email, and omitted the `author` key when the relation was unloaded. `php artisan test` passed all 20 tests. Pint and `git diff --check` passed.
+- **Commit:** `ff3dd51`
