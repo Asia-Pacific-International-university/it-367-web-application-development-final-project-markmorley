@@ -949,3 +949,33 @@
 - **What I changed by hand and why:** I specified the relationship and key. The explicit key is needed because Laravel would otherwise infer `user_id` from the related table.
 - **How I checked it works:** Tinker returned count `1` and title `"Welcome"` for the first user. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `90cbdb7`
+
+---
+
+### Step 39: Add the admin state to UserFactory
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  The AnnouncementFactory needs User::factory()->admin(), but UserFactory currently has no admin state. Add and commit the missing state before creating AnnouncementFactory.
+  ```
+- **What the AI produced:** Added `UserFactory::admin()` to set the user's role to `User::ROLE_ADMIN`.
+- **What I changed by hand and why:** I added the missing prerequisite state because the announcement factory requires admin authors.
+- **How I checked it works:** `php -l database/factories/UserFactory.php` passed, and Tinker returned `"admin"` for `User::factory()->admin()->make()->role`.
+- **Commit:** `c45e34c`
+
+---
+
+### Step 40: Add the Announcement factory
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Create AnnouncementFactory with an admin author, a four-word fake title, a fake paragraph message, and a published_at date within the previous month. Add a draft() state that sets published_at to null. Verify both states in Tinker, run the tests, commit the factory, and log the hash.
+  ```
+- **What the AI produced:** Added `AnnouncementFactory` with generated admin authors, sample announcement content, recent publication dates, and a draft state.
+- **What I changed by hand and why:** I specified the factory attributes and the `draft()` state for creating unpublished announcements.
+- **How I checked it works:** Tinker returned `"admin"` and a Carbon publication date for a published announcement, and `null` for a draft. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `1dbc7c2`
