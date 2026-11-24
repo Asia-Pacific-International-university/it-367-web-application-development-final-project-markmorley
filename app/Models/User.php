@@ -54,11 +54,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function notes(): HasMany
-    {
-        return $this->hasMany(Note::class);
-    }
-
     public function memberProfile(): HasOne
     {
     return $this->hasOne(MemberProfile::class);
