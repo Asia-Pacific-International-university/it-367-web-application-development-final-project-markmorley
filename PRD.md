@@ -303,13 +303,15 @@ Every screen that loads data shows three states: a loading message while the req
 
 ## 8. Level-up Features
 
-| Feature | Points | How it fits my app |
-| --- | --- | --- |
-| Financial Dashboard | To be determined | Displays charts and financial summaries showing monthly dues, donations, total contributions, and unpaid members. |
-| Export Financial Reports | To be determined | Allows the Treasurer to download monthly and annual financial reports in CSV or PDF format. |
-| Monthly Payment Reminders | To be determined | Helps members remember their monthly dues by notifying them when their payments are still incomplete. |
+| Feature (from the menu) | Points | How it fits my app | Done when |
+| --- | --- | --- | --- |
+| Reports and charts | 6 | `GET /api/reports/monthly` and `GET /api/reports/annual` return sums and counts by month (dues collected, donations, paid and unpaid members). The treasurer's report screen shows them as a chart. | Both endpoints are tested for correct totals and for 403 when the user is not the treasurer. The chart renders from the API data. |
+| Queued jobs or scheduled tasks | 8 | A scheduled command, `dues:remind`, runs on a set day each month. It finds members whose current month is still unpaid and stores an in-app notification that the member sees on their dues screen. | Tests check that unpaid members get a notification, paid members do not, and that running it twice in one month does not duplicate. The schedule runs on the deployed app. |
+| Frontend tests | 6 | Vitest tests for the login flow and one full create, edit and delete flow, using announcements or members. | At least 2 tests pass in CI or locally with `npm test`. |
 
-These features will improve financial monitoring, reduce manual reporting work, and help members stay informed about their monthly contributions.
+Total: 20 points, which is the maximum that counts.
+
+The earlier idea of exporting reports as CSV or PDF is not on the menu, so it is dropped. If I want it back, it needs written approval from the instructor as "Your own proposal".
 
 ## 9. Out of Scope
 
