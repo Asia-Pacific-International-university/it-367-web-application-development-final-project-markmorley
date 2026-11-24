@@ -1039,3 +1039,18 @@
 - **What I changed by hand and why:** A donation is the positive remainder after subtracting the amount applied to dues from the total payment. Here, a 50 payment allocates 30 to October and records the remaining 20 as a donation; it does not reduce a later month's dues.
 - **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker returned 29 payments, 6 donations, 29 allocations, and 4 dues records without payments. `php artisan test` passed all 16 tests (55 assertions).
 - **Commit:** `e210eb0`
+
+---
+
+### Step 45: Seed announcements
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Seed three published announcements and one draft, all authored by the seeded admin. Rebuild the local database, verify total, published, and admin-authored counts, run the tests, commit the seeder, and log the hash.
+  ```
+- **What the AI produced:** Updated `DatabaseSeeder` to create three published announcements and one draft, explicitly using the seeded admin as author.
+- **What I changed by hand and why:** I specified the admin author and draft title. Supplying the author ID prevents the factory from creating a separate admin for each announcement.
+- **How I checked it works:** `php artisan migrate:fresh --seed` completed. Tinker returned 4 announcements, 3 with `published_at`, and 4 announcements for the admin. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `a03b89c`
