@@ -121,17 +121,21 @@ The existing `User` model will store login information and each user's role.
 - A User with the Treasurer role records many Payments (`recorded_by_user_id`).
 - A User with the Club Officer / Admin role publishes many Announcements (`author_user_id`).
 
-### 5.3 Monthly Dues and Donations
+### 5.3 Monthly Dues, Allocations and Donations
 
-Each member must contribute at least ฿30 per month. The system will calculate the total contributions for each member for that month.
+Each member must contribute at least ฿30 per month (`required_amount`). A payment is not tied to one month. The treasurer chooses which months a payment covers, and the backend splits the amount:
 
-- If the monthly amount applied to dues reaches at least ฿30, the member is marked as paid.
-- If the monthly amount applied to dues is below ฿30, the member is marked as unpaid.
-- If a member contributes more than the remaining amount needed to reach ฿30 in a month, the excess is recorded as a donation.
-- Extra contributions do not carry over to the following month.
-- Financial reports will show dues and donations separately.
+1. For each selected month, in order, the backend works out what is still outstanding: `required_amount` minus the `allocated_amount` already recorded for that month.
+2. It allocates the smaller of the outstanding amount and what is left of the payment, and stores it in `payment_monthly_dues.allocated_amount`.
+3. Whatever is left after all selected months are covered is saved as a Donation: `donation = payment.amount − sum(allocated_amount)`. No Donation row is created when the result is zero.
 
-The system will calculate the dues portion across all payments for that member and month. For example, if a member pays ฿20 and later pays another ฿20 in the same month, ฿30 is applied to dues and the remaining ฿10 is recorded as a donation.
+Monthly status follows from the allocations:
+
+- A month is **paid** when the sum of its `allocated_amount` values reaches `required_amount` (฿30).
+- A month is **unpaid** when that sum is below ฿30. Several smaller payments can add up to a paid month.
+- Extra money is never carried forward to a later month. It becomes a donation.
+
+The whole split runs in one database transaction, so a payment, its allocations and its donation are saved together or not at all. The request body never contains an allocation or donation amount. The backend calculates both.
 
 ### 5.4 Announcement Management
 
@@ -182,9 +186,11 @@ The system will use a Laravel 12 REST API to handle communication between the Vu
 | Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
 | GET | `/api/payments` | Admin, Treasurer | View all payment records. |
-| POST | `/api/payments` | Treasurer | Record a payment for a registered member. |
+| POST | `/api/payments` | Treasurer | Record a payment for a registered member. Body: `member_profile_id`, `amount`, `payment_date`, `payment_method` (`cash` or `bank_transfer`), `monthly_dues_ids` (array of the months it covers). The backend sets `recorded_by_user_id` from the logged-in treasurer, then calculates the allocations and any donation. |
 | GET | `/api/payments/{id}` | Admin, Treasurer | View payment details. |
 | GET | `/api/my/payments` | Member | View the current member's own payment history. |
+
+Example response: `201 Created` with the payment, its `monthly_dues` (each with `allocated_amount`) and its `donation` (or `null`).
 
 ### 6.5 Donation and Financial Report Endpoints
 
