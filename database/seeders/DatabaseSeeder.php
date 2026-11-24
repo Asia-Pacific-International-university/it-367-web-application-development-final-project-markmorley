@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Announcement;
 use App\Models\Donation;
 use App\Models\MemberProfile;
 use App\Models\MonthlyDues;
@@ -85,6 +86,17 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
+
+        $admin = User::where('email', 'admin@example.com')->first();
+
+        Announcement::factory()->count(3)->create([
+            'author_user_id' => $admin->id,
+        ]);
+
+        Announcement::factory()->draft()->create([
+            'author_user_id' => $admin->id,
+            'title' => 'Draft: Foundation Day planning',
+        ]);
 
         $demo = User::factory()->create([
             'name' => 'Demo User',
