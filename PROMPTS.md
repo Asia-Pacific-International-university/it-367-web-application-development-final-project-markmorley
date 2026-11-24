@@ -859,3 +859,18 @@
 - **What I changed by hand and why:** I specified the schema. `payment_id` is unique so one payment can have at most one donation. The donation cascades with its payment because it represents that payment's excess and has no independent meaning; in contrast, a payment's member-profile foreign key restricts deleting a profile that still has payment records. I left `DECISIONS.md` unchanged at the user's direction.
 - **How I checked it works:** `php -l` reported no syntax errors, `php artisan migrate` completed, and `php artisan db:table donations` showed five columns (`id`, `payment_id`, `amount`, `created_at`, `updated_at`), a unique index on `payment_id`, and a foreign key to `payments` with cascade on delete.
 - **Commit:** `aa6829a`
+
+---
+
+### Step 33: Add the Donation model
+
+- **Date:** 2026-11-24
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Create app/Models/Donation.php without generating another migration. Add fillable payment_id and amount fields, cast amount to decimal:2, and define the belongs-to Payment relationship. Verify the cast and relationship in Tinker, run the tests, and commit the model.
+  ```
+- **What the AI produced:** Added the `Donation` model with `HasFactory`, the requested fillable fields, a two-decimal amount cast, and a `BelongsTo` payment relationship.
+- **What I changed by hand and why:** I specified the model structure and validation steps. The amount is represented as an exact decimal, and the payment relationship resolves the donation's owning payment.
+- **How I checked it works:** Tinker returned `"10.00"` for the donation amount and `"30.00"` for the related payment amount. `php artisan test` passed all 16 tests (55 assertions).
+- **Commit:** `7222021`
