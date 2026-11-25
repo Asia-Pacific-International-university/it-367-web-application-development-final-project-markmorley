@@ -1534,3 +1534,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** Reviewed the Markdown table and documentation diff; no runtime check was needed for this documentation-only update.
 - **Commit:** `a15ed95`
+
+---
+
+### Step 78: Optimize Laravel during Docker startup
+
+- **Date:** 2026-11-25
+- **Tool:** No AI (manual change)
+- **Prompt:**
+  ```text
+  No AI. Manually add `php artisan optimize` to the Docker startup command before starting the Laravel server.
+  ```
+- **What the AI produced:** No AI used; the Docker startup command was edited manually.
+- **What I changed by hand and why:** Added `php artisan optimize` after the production seeder and before `artisan serve` so Laravel's production optimizations are applied at container startup.
+- **How I checked it works:** Reviewed the Dockerfile diff; no image build or runtime check was performed.
+- **Commit:** _fill in after committing_

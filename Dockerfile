@@ -19,4 +19,4 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
 
 ENV PHP_CLI_SERVER_WORKERS=4
 
-CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --class=ProductionSeeder --force && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --class=ProductionSeeder --force && php artisan optimize && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
