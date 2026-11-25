@@ -1459,3 +1459,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `php artisan test` passed all 51 tests (160 assertions). Pint and `git diff --check` passed.
 - **Commit:** `79f4233`
+
+---
+
+### Step 73: Add MonthlyDuesController, routes, and allocation filters (course Step 56)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add the MonthlyDuesController and authenticated routes, update the resource to handle nullable allocation totals and include payment allocations, verify route parameters and tests, then commit and push.
+  ```
+- **What the AI produced:** Added the monthly-dues index, create, show, update, delete, and member-specific endpoints with authorization, pagination, eager loading, and paid/unpaid filters.
+- **What I changed by hand and why:** Fixed the resource behavior from Step 55 by explicitly detecting when the aggregate is loaded and treating a loaded NULL total as 0.00/unpaid; also exposed loaded payment allocation details. Ensured zero-valued year and member filters are applied instead of being skipped.
+- **How I checked it works:** `route:list` showed all five resource routes with `{monthly_due}` and the `api/my/monthly-dues` route. `php artisan test` passed all 51 tests (160 assertions). Pint and `git diff --check` passed.
+- **Commit:** `9d0f831`
