@@ -1638,4 +1638,4 @@
 - **What the AI produced:** Updated the report endpoint statuses and separated completed report APIs from the still-planned charts in the feature table.
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `git diff --check` passed; reviewed the README diff.
-- **Commit:** _fill in after committing_
+- **Commit:** `919bf00`
