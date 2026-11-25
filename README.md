@@ -115,8 +115,8 @@ Base path `/api`. Status: **Built** = implemented and tested, **Planned** = in t
 | GET | `/api/profile` | any logged-in user | Own profile | Planned |
 | PUT | `/api/profile` | any logged-in user | Update own name and phone | Planned |
 | GET | `/api/donations` | admin, treasurer | List donations | Planned |
-| GET | `/api/reports/monthly` | treasurer | Monthly totals | Planned |
-| GET | `/api/reports/annual` | treasurer | Annual totals | Planned |
+| GET | `/api/reports/monthly` | treasurer | Monthly totals | Implemented |
+| GET | `/api/reports/annual` | treasurer | Annual totals | Implemented |
 
 Payments cannot be edited or deleted. `PUT` and `DELETE` on a payment return 405.
 
@@ -136,7 +136,8 @@ Payments cannot be edited or deleted. `PUT` and `DELETE` on a payment return 405
 
 | Feature | Points | Code | Tests |
 | --- | --- | --- | --- |
-| Reports and charts | 6 | *planned* | *planned* |
+| Monthly and annual reports | — | *implemented* | *implemented* |
+| Charts | 6 | *planned* | *planned* |
 | Queued jobs or scheduled tasks (payment reminders) | 8 | *planned* | *planned* |
 | Frontend tests | 6 | *planned* | *planned* |
 

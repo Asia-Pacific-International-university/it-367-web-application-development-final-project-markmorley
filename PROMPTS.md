@@ -1624,3 +1624,18 @@
 - **What I changed by hand and why:** Replaced the nonexistent `UserFactory::member()` call with the default user factory because its default role is member. Replaced the SQLite-incompatible `EXTRACT` expression with a driver-specific expression after the annual report test exposed the failure. Removed unused controller imports.
 - **How I checked it works:** `php vendor/bin/phpunit --do-not-cache-result --filter=ReportApiTest` passed all 4 focused tests (15 assertions). `php artisan test` passed all 88 tests (285 assertions) after retrying with elevated access to address the workspace path issue. `vendor/bin/pint --test` passed.
 - **Commit:** `ee893a0`
+
+---
+
+### Step 84: Update report and chart status in the README
+
+- **Date:** 2026-11-25
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Update README.md to mark GET /api/reports/monthly and GET /api/reports/annual as implemented. Split the level-up feature row into implemented monthly and annual reports with no points claimed and planned charts worth 6 points. Run git diff --check and review the README diff, then commit and push to personal/main and origin/main.
+  ```
+- **What the AI produced:** Updated the report endpoint statuses and separated completed report APIs from the still-planned charts in the feature table.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** `git diff --check` passed; reviewed the README diff.
+- **Commit:** _fill in after committing_
