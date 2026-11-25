@@ -1384,3 +1384,18 @@
 - **What I changed by hand and why:** I kept the requested checks for treasurer-only creation, member/admin denial, invalid input, server-owned recorder identity, ownership-scoped views, filtering, hidden email, and absent update/delete routes.
 - **How I checked it works:** `php artisan test --filter=PaymentApiTest` passed all 17 tests (57 assertions). `php artisan test` passed all 51 tests (160 assertions). Pint and `git diff --check` passed.
 - **Commit:** `9b4c8a9`
+
+---
+
+### Step 68: Read demo account passwords from configuration
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Move seeded demo-account passwords to the app.demo_password config value backed by SEED_PASSWORD, add the variable name to .env.example, configure it locally without committing its value, verify fresh seeding and treasurer authentication, run tests, and commit.
+  ```
+- **What the AI produced:** Added the `SEED_PASSWORD` config setting and used it for all four seeded accounts. Added an empty variable to `.env.example` and updated setup/login documentation to avoid advertising a shared password.
+- **What I changed by hand and why:** I kept the local seed value in ignored `.env` only. A publicly known default password would let anyone attempt to log into a seeded administrator or treasurer account; deployments must set a unique secret before seeding.
+- **How I checked it works:** With approval, `php artisan migrate:fresh --seed` completed. Laravel authentication accepted the treasurer account using the configured password. `php artisan test` passed all 51 tests. Pint and `git diff --check` passed.
+- **Commit:** `94b792e`
