@@ -1533,4 +1533,4 @@
 - **What the AI produced:** Added the `GET /api/payments` before measurement and measurement method to Section 6 of `DEPLOYMENT.md`, with the after measurement marked pending.
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** Reviewed the Markdown table and documentation diff; no runtime check was needed for this documentation-only update.
-- **Commit:** _fill in after committing_
+- **Commit:** `a15ed95`
