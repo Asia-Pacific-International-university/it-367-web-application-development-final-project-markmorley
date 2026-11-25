@@ -1354,3 +1354,18 @@
 - **What I changed by hand and why:** I kept update and delete undefined in the policy because payments are append-only financial records. I made a loaded-but-absent donation serialize as `null`, so partial-payment responses match PaymentService behavior.
 - **How I checked it works:** Tinker returned `true`, `false`, `false`, `false` for the create/view/update Gate checks and validation errors for amount, method, and empty monthly dues. The resource included member and treasurer names without email and returned `donation: null` when absent. `php artisan test` passed all 34 tests. Pint and `git diff --check` passed.
 - **Commit:** `4e6ca71`
+
+---
+
+### Step 66: Add the PaymentController and routes (course Step 50)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add PaymentController with authorized paginated filtering, show, store through PaymentService, and a current-user payments endpoint. Register only index, show, and store for the payment resource plus the my/payments route. Verify route lists and tests, run the seeded API demo, commit, log, and push.
+  ```
+- **What the AI produced:** Added the payment controller and authenticated payment list/show/create and own-payment routes.
+- **What I changed by hand and why:** The controller delegates payment rules to `PaymentService`, creation authorization and validation to `StorePaymentRequest`, and response shaping to `PaymentResource`. Keeping those responsibilities out of controller methods avoids duplicating the allocation rules and permissions.
+- **How I checked it works:** Route lists showed three `/api/payments` routes and one `/api/my/payments` route. `php artisan test` passed all 34 tests. Pint and `git diff --check` passed. After `migrate:fresh --seed`, the treasurer listed 29 payments; a ฿50 payment returned ฿30 allocated and ฿20 donated, a repeat was rejected with 422, and a member's POST was rejected with 403.
+- **Commit:** `ce26ec9`
