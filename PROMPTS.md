@@ -1414,3 +1414,18 @@
 - **What I changed by hand and why:** I trusted forwarded proxy headers so Laravel can determine the original client address and HTTPS scheme behind Railway's proxy. This keeps request-aware behavior such as per-client login throttling and secure URL detection accurate.
 - **How I checked it works:** `php artisan test` passed all 51 tests. Pint and `git diff --check` passed.
 - **Commit:** `bc91049`
+
+---
+
+### Step 70: Add an idempotent production seeder (course Step 54a)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add a factory-free ProductionSeeder that safely creates or updates the three production demo accounts and member profile, preserves existing passwords, verify it can be run twice, run the tests, commit, and push.
+  ```
+- **What the AI produced:** Added `database/seeders/ProductionSeeder.php`, which creates the admin, treasurer, and member accounts without factories and creates the member profile if missing.
+- **What I changed by hand and why:** The seeder only assigns the configured password when an account is first created, so rerunning it does not reset a password changed by an account owner.
+- **How I checked it works:** Ran the seeder twice after a fresh migration; it produced exactly the expected three accounts and one member profile. All 51 tests passed. Restored the local demo database with `php artisan migrate:fresh --seed`. Pint and `git diff --check` passed.
+- **Commit:** `ddc8de7`
