@@ -1,136 +1,145 @@
-# IT341 Final Project Starter: Laravel 12 REST API
+# Filipino Club Membership and Dues System
 
-This is the starting point for your IT341 final project. It gives you a working Laravel 12 API with token authentication, so you can spend your 3 weeks on **your** app.
+A Laravel 12 REST API for the Filipino Club. The treasurer records monthly dues payments, officers manage the club, and members check their own payments. Every payment is split by the backend: each selected month is filled up to ฿30, and any extra becomes a donation.
 
-> **Replace this README** with your own before you submit (keep the setup steps and add your endpoint table). See "What your README must contain" at the bottom.
+**Student:** Mark Michael Morley | **Course:** IT 367 Web Application Development
 
-## What is already here
+## Live
 
-| Part | Where | Notes |
-| --- | --- | --- |
-| Token auth (Laravel Sanctum) | `app/Http/Controllers/Api/AuthController.php` | register, login, logout, current user |
-| Announcements API | `Announcement` model, `AnnouncementController`, `AnnouncementResource`, `AnnouncementPolicy`, Form Requests | Full CRUD for published announcements and admin-managed drafts |
-| JSON-only API errors | `bootstrap/app.php`, `app/Http/Middleware/ForceJsonResponse.php` | 401, 403, 404 and 422 always come back as JSON |
-| Feature tests | `tests/Feature/AuthTest.php`, `tests/Feature/AnnouncementApiTest.php`, `tests/Feature/AnnouncementPolicyTest.php`, `tests/Feature/AnnouncementResourceTest.php` | Authentication and announcement access, validation, and response tests |
-| Demo data | `database/seeders/DatabaseSeeder.php` | Demo login: `demo@example.com`; password is configured with `SEED_PASSWORD` |
-| Deployment notes | `DEPLOYMENT.md` | Fill in when you deploy (CLO 3) |
-| Product requirements | `PRD.md` | Write this first, due day 3 of week 1 |
-| AI usage log | `PROMPTS.md` | Fill it in after **every** commit |
-| Design decisions | `DECISIONS.md` | Write it yourself, without AI |
-| N+1 query guard | `app/Providers/AppServiceProvider.php` | Lazy loading throws an error outside production |
-| CI | `.github/workflows/tests.yml` | Runs Pint (code style) and `php artisan test` on every push |
+- **API:** [https://filipino-club-api.onrender.com/api](https://filipino-club-api.onrender.com/api) (health check: [https://filipino-club-api.onrender.com/up](https://filipino-club-api.onrender.com/up))
+- **Frontend:** *coming in week 3*
 
-## Requirements
+The API runs on a free Render instance, so the first request after a pause can take about a minute to wake up.
 
-- PHP 8.2 or newer (with `pdo_sqlite`, `mbstring`)
-- Composer 2
-- SQLite (default, nothing to install) or MySQL if you prefer
+## Demo logins
 
-## Setup
+| Role | Email | Password | Can do |
+| --- | --- | --- | --- |
+| Admin (Club Officer) | `admin@example.com` | Set in Render; not published in this repository. Local: `SEED_PASSWORD` in `.env`. | Manage announcements, view all payments and dues |
+| Treasurer | `treasurer@example.com` | Set in Render; not published in this repository. Local: `SEED_PASSWORD` in `.env`. | Record payments, manage monthly dues |
+| Member | `member@example.com` | Set in Render; not published in this repository. Local: `SEED_PASSWORD` in `.env`. | View own payments and dues |
+
+These accounts hold fake data only. The live demo uses a prototype account and should not contain real personal or payment information. The deployed password is configured privately in Render; do not commit it to the repository.
+
+## Documents
+
+| File | What it is |
+| --- | --- |
+| [PRD.md](PRD.md) | Problem, roles, user stories, business rules, data model, API plan |
+| [Endpoints](#endpoints) | Implemented and planned API routes with their roles and status |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | Hosting, security controls, optimizations |
+| [DECISIONS.md](DECISIONS.md) | Design decisions and why |
+| [PROMPTS.md](PROMPTS.md) | AI usage log, one entry per commit |
+
+## Setup (local)
+
+Requirements: PHP 8.2 or newer (with `pdo_sqlite`, `mbstring`), Composer 2, SQLite (nothing to install).
 
 ```bash
-# 1. Create your own repo from this template ("Use this template" on GitHub), then:
-git clone https://github.com/<you>/<your-repo>.git
+git clone <your-repo-url>
 cd <your-repo>
 
-# 2. Install and configure
 composer install
 cp .env.example .env
 php artisan key:generate
-# Set SEED_PASSWORD in .env to a strong local value before seeding.
-# Set a unique secret in production before running any seeders.
 
-# 3. Build the database with demo data
+# Set a local demo password in .env before seeding, for example:
+# SEED_PASSWORD=password
+
 touch database/database.sqlite        # Windows PowerShell: ni database/database.sqlite
 php artisan migrate:fresh --seed
 
-# 4. Run the tests and the style check, then start the API
 php artisan test
-./vendor/bin/pint --test              # ./vendor/bin/pint fixes the style for you
-php artisan serve                     # http://localhost:8000
+./vendor/bin/pint --test              # ./vendor/bin/pint fixes the style
+php artisan serve                     # http://127.0.0.1:8000
 ```
 
-To use MySQL instead, set `DB_CONNECTION=mysql` and the `DB_*` values in `.env`.
+Set `SEED_PASSWORD` before seeding. If it is empty, the demo accounts are created with an empty password and cannot log in. Use a unique value for any deployed environment.
 
-## Using the API
-
-Every endpoint is under `/api`. Send `Accept: application/json`, and for protected routes `Authorization: Bearer <token>`.
+Try it:
 
 ```bash
-# Log in and get a token
-curl -X POST http://localhost:8000/api/login \
-  -H "Accept: application/json" \
-  -d email=demo@example.com -d password='<your-SEED_PASSWORD>'
-
-# Use the token
-curl http://localhost:8000/api/notes \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer 1|abc..."
+curl -X POST http://127.0.0.1:8000/api/login \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -d '{"email":"treasurer@example.com","password":"password"}'
 ```
 
-### Endpoints in the starter
+Send the returned token as `Authorization: Bearer <token>` on protected requests, with `Accept: application/json`.
 
-| Method | URL | Auth | What it does |
+## How a payment works
+
+1. The treasurer creates a month of dues for a member (default ฿30).
+2. The treasurer records a payment and chooses which months it covers.
+3. The backend allocates the amount to each selected month, up to what it still owes. A month is **paid** once its allocations reach ฿30, and smaller payments add up.
+4. Anything left over is saved as a donation and is never carried to the next month.
+5. A payment, its allocations and its donation are saved in one transaction, so a rejected payment leaves nothing behind.
+
+## ERD
+
+![Filipino Club membership and dues entity relationship diagram](docs/erd.png)
+
+Payments and monthly dues are linked many-to-many through `payment_monthly_dues`, which stores `allocated_amount`.
+
+## Endpoints
+
+Base path `/api`. Status: **Built** = implemented and tested, **Planned** = in the PRD, not built yet.
+
+| Method | URL | Auth and role | What it does | Status |
+| --- | --- | --- | --- | --- |
+| GET | `/up` (no `/api`) | none | Health check | Built |
+| POST | `/api/register` | none, 6 per minute | Create a Member account, returns user and token | Built |
+| POST | `/api/login` | none, 6 per minute | Returns user and token | Built |
+| POST | `/api/logout` | any logged-in user | Revokes the current token | Built |
+| GET | `/api/user` | any logged-in user | The current user | Built |
+| GET | `/api/announcements` | any logged-in user | List. Members see published only | Built |
+| POST | `/api/announcements` | admin | Create | Built |
+| GET | `/api/announcements/{announcement}` | any logged-in user (drafts: admin) | View one | Built |
+| PUT/PATCH | `/api/announcements/{announcement}` | admin | Update | Built |
+| DELETE | `/api/announcements/{announcement}` | admin | Delete | Built |
+| GET | `/api/payments` | admin, treasurer | List. Filters: `member_id`, `payment_method`, `from`, `to`, `sort` | Built |
+| POST | `/api/payments` | treasurer | Record a payment, split into allocations and a donation | Built |
+| GET | `/api/payments/{payment}` | admin, treasurer, member (own) | View one | Built |
+| GET | `/api/my/payments` | any logged-in user | Own payments | Built |
+| GET | `/api/monthly-dues` | admin, treasurer | List. Filters: `month`, `year`, `member_id`, `status` | Built |
+| POST | `/api/monthly-dues` | treasurer | Create a month for a member | Built |
+| GET | `/api/monthly-dues/{monthly_due}` | admin, treasurer, member (own) | View one with its payments | Built |
+| PUT/PATCH | `/api/monthly-dues/{monthly_due}` | treasurer | Change the required amount | Built |
+| DELETE | `/api/monthly-dues/{monthly_due}` | treasurer | Delete (blocked if it has payments) | Built |
+| GET | `/api/my/monthly-dues` | any logged-in user | Own dues and status | Built |
+| GET | `/api/members` | admin, treasurer | List with search and sort | Planned |
+| POST | `/api/members` | admin, treasurer | Create a member | Planned |
+| GET | `/api/members/{member}` | admin, treasurer | View one | Planned |
+| PUT | `/api/members/{member}` | admin, treasurer | Update | Planned |
+| DELETE | `/api/members/{member}` | admin | Soft delete | Planned |
+| GET | `/api/members/{member}/payments` | admin, treasurer | Nested: a member's payments | Planned |
+| GET | `/api/profile` | any logged-in user | Own profile | Planned |
+| PUT | `/api/profile` | any logged-in user | Update own name and phone | Planned |
+| GET | `/api/donations` | admin, treasurer | List donations | Planned |
+| GET | `/api/reports/monthly` | treasurer | Monthly totals | Planned |
+| GET | `/api/reports/annual` | treasurer | Annual totals | Planned |
+
+Payments cannot be edited or deleted. `PUT` and `DELETE` on a payment return 405.
+
+## Business rules
+
+| Rule | Behavior |
+| --- | --- |
+| BR01 | Only the treasurer can record payments (others get 403) |
+| BR02 | A payment needs an existing member, an amount above 0, a date and a method of `cash` or `bank_transfer` (otherwise 422) |
+| BR03 | Each member owes at least ฿30 per month |
+| BR04 | A month is paid once its allocations reach ฿30 |
+| BR05 | Anything above what the selected months owe becomes a donation, never carried forward |
+
+## Level-up features
+
+*Fill in where each one lives once built. Planned from the PRD:*
+
+| Feature | Points | Code | Tests |
 | --- | --- | --- | --- |
-| POST | `/api/register` | no | Create an account. Body: `name`, `email`, `password`, `password_confirmation`. Returns user + token |
-| POST | `/api/login` | no | Body: `email`, `password`. Returns user + token |
-| POST | `/api/logout` | yes | Revokes the current token |
-| GET | `/api/user` | yes | The logged-in user |
-| GET | `/api/notes` | yes | Your notes, 10 per page (`?page=2`) |
-| POST | `/api/notes` | yes | Create. Body: `title` (required), `body`, `is_pinned` |
-| GET | `/api/notes/{id}` | yes | One of your notes (403 if not yours) |
-| PUT/PATCH | `/api/notes/{id}` | yes | Update any of the fields |
-| DELETE | `/api/notes/{id}` | yes | Delete (204) |
+| Reports and charts | 6 | *planned* | *planned* |
+| Queued jobs or scheduled tasks (payment reminders) | 8 | *planned* | *planned* |
+| Frontend tests | 6 | *planned* | *planned* |
 
-Run `php artisan route:list --path=api` to see every route.
+## Tests
 
-### Calling the API from your frontend
-
-```js
-const API = 'http://localhost:8000/api';
-
-const res = await fetch(`${API}/login`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-  body: JSON.stringify({ email, password }),
-});
-const { token } = await res.json();
-localStorage.setItem('token', token);
-
-// Later requests
-const notes = await fetch(`${API}/notes`, {
-  headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
-}).then(r => r.json());
-// A 422 response has { message, errors: { field: ["..."] } }; show those errors in your form.
-```
-
-Your frontend must be **Vue.js or React**. CORS is open during development so it can call the API from another port; in production set `CORS_ALLOWED_ORIGINS` to your frontend's URL. Login and register are rate limited, and tokens expire after `SANCTUM_EXPIRATION` minutes (default 1 day).
-
-## Your first step: PRD.md
-
-Before building anything of your own, fill in `PRD.md`: the problem, your users and roles, user stories, business rules, data model, API plan and screens. Commit it, log it in `PROMPTS.md`, and wait for feedback before you create your models.
-
-## How to add your own resource (the pattern to follow)
-
-Follow the Notes example, one step and one commit at a time:
-
-1. `php artisan make:model Product -mf` (model, migration, factory). Add relationships.
-2. `php artisan make:request StoreProductRequest` and `UpdateProductRequest`. Add rules.
-3. `php artisan make:resource ProductResource`. Choose the fields to return.
-4. `php artisan make:policy ProductPolicy --model=Product`. Decide who can do what.
-5. `php artisan make:controller Api/ProductController --api --model=Product`. Register it in `routes/api.php` with `Route::apiResource`.
-6. `php artisan make:test ProductApiTest`. Test success, validation and authorization.
-7. Add it to `DatabaseSeeder`.
-
-Log each step in `PROMPTS.md` and commit. You need at least 40 commits on at least 12 different days; check with `git log --format=%ad --date=short | sort -u | wc -l`.
-
-## What your README must contain (before you submit)
-
-- Project name and a short description of what it does (link to `PRD.md` for the details)
-- Setup steps (you can keep the ones above) and the demo login
-- A demo login for each role
-- Your ERD (`docs/erd.png`)
-- A table of **every** endpoint: method, URL, auth and role needed, what it does
-- Your chosen level-up features, and where their code and tests are
-- Link to your frontend repo (if separate) and your demo video
-- Your live HTTPS URLs for the API and the frontend (required)
+`php artisan test` runs 73 tests covering authentication, announcements, payments, monthly dues and the payment service rules. CI runs Pint and the tests on every push.
