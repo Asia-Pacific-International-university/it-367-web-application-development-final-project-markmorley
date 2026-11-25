@@ -5,7 +5,9 @@ You will explain this file in the defense. Write the reasons yourself.
 ## 1. Live URLs
 
 - **Frontend:** https://...
-- **API:** https://.../api
+- **API base URL:** https://filipino-club-api.onrender.com
+- **Health check:** https://filipino-club-api.onrender.com/up
+- **Smoke test:** `POST /api/login` returned `422` for intentionally invalid credentials, as expected.
 
 ## 2. Architecture
 
