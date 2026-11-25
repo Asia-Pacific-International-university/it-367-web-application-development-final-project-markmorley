@@ -9,7 +9,6 @@ use App\Http\Resources\MemberProfileResource;
 use App\Http\Resources\PaymentResource;
 use App\Models\MemberProfile;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class MemberController extends Controller
