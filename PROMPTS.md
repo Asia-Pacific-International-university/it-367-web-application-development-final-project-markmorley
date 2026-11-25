@@ -1429,3 +1429,18 @@
 - **What I changed by hand and why:** The seeder only assigns the configured password when an account is first created, so rerunning it does not reset a password changed by an account owner.
 - **How I checked it works:** Ran the seeder twice after a fresh migration; it produced exactly the expected three accounts and one member profile. All 51 tests passed. Restored the local demo database with `php artisan migrate:fresh --seed`. Pint and `git diff --check` passed.
 - **Commit:** `ddc8de7`
+
+---
+
+### Step 71: Add Docker deployment files (Docker setup Step 1)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Create a root Dockerfile for the Laravel application and a .dockerignore that excludes local environment files and unnecessary dependencies, then record the change, commit, and push.
+  ```
+- **What the AI produced:** Added a PHP 8.3 Apache Dockerfile that installs production Composer dependencies and configures Apache to serve Laravel's `public` directory. Added a `.dockerignore` for environment files, Git metadata, and local dependencies.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** Confirmed both files are in the project root beside `artisan` and `composer.json`. Confirmed `.env` is excluded while `.env.example` is allowed. A Docker image build was not run.
+- **Commit:** Pending
