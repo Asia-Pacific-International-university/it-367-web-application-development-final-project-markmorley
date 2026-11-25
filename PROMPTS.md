@@ -1474,3 +1474,33 @@
 - **What I changed by hand and why:** Fixed the resource behavior from Step 55 by explicitly detecting when the aggregate is loaded and treating a loaded NULL total as 0.00/unpaid; also exposed loaded payment allocation details. Ensured zero-valued year and member filters are applied instead of being skipped.
 - **How I checked it works:** `route:list` showed all five resource routes with `{monthly_due}` and the `api/my/monthly-dues` route. `php artisan test` passed all 51 tests (160 assertions). Pint and `git diff --check` passed.
 - **Commit:** `9d0f831`
+
+---
+
+### Step 74: Refresh created monthly dues (course Step 57a)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Refresh a newly created monthly-dues model before returning it so the database default required amount is present in the API response.
+  ```
+- **What the AI produced:** Refreshes the created MonthlyDues model before loading its response relations and aggregate.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** The default-amount API test passed with `required_amount` returned as `30.00`. Pint and `git diff --check` passed.
+- **Commit:** `17e7f1a`
+
+---
+
+### Step 75: Add monthly-dues API tests (course Step 57b)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add feature tests for monthly-dues authorization, validation, status filters, ownership, updates, and deletion; run the focused and full test suites, then commit and push.
+  ```
+- **What the AI produced:** Added 22 feature tests covering dues creation, filtering, payment allocations, member ownership, updates, deletion, and error responses.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** `php artisan test --filter=MonthlyDuesApiTest` passed all 22 tests (81 assertions). `php artisan test` passed all 73 tests (241 assertions). Pint and `git diff --check` passed.
+- **Commit:** `4ead6e9`
