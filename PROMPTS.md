@@ -1504,3 +1504,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `php artisan test --filter=MonthlyDuesApiTest` passed all 22 tests (81 assertions). `php artisan test` passed all 73 tests (241 assertions). Pint and `git diff --check` passed.
 - **Commit:** `4ead6e9`
+
+---
+
+### Step 76: Document the Render API and planned frontend
+
+- **Date:** 2026-11-25
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Change Section 1 in DEPLOYMENT.md to list the API base URL https://filipino-club-api.onrender.com, the health check https://filipino-club-api.onrender.com/up, state that the local development origin http://localhost:5173 is allowed by CORS, and say the frontend is planned for Week 3 with its deployed URL to be added once available. Commit and push to main, and record this change in PROMPTS.md.
+  ```
+- **What the AI produced:** Updated Section 1 of `DEPLOYMENT.md` with the Render API URL, health check, CORS origin, and Week 3 frontend plan.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** Reviewed the documentation diff; no runtime check was needed for this documentation-only update.
+- **Commit:** _fill in after committing_
