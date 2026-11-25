@@ -1654,3 +1654,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `php artisan route:list --path=api/donations` showed the endpoint. The focused suite passed 4 tests (17 assertions); the full suite passed 92 tests (302 assertions); `vendor/bin/pint --test` passed. Laravel test commands required elevated access because PHP initially reported the workspace path as nonexistent.
 - **Commit:** `499ca9a`
+
+---
+
+### Step 86: Add the Vue authentication flow
+
+- **Date:** 2026-11-26
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Add a shared Axios API client using sessionStorage bearer tokens, replace the dashboard component with login and member registration using the existing Laravel endpoints, verify the user and role from /api/user, update the Vue component tests, then run npm.cmd test and npm.cmd run build.
+  ```
+- **What the AI produced:** Added the Axios client, login/register/logout UI, current-session verification and role display, the app Blade mount page, Vue entry point, and two authentication component tests. Added the role field to `UserResource`.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** `php artisan test` passed all 95 tests (308 assertions). `npm.cmd test` passed 2 tests. `npm.cmd run build` passed.
+- **Commit:** `8974f87`
