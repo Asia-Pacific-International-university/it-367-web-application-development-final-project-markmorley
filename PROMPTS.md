@@ -1579,3 +1579,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** Cleared the stale Laravel route cache; `route:list --path=api/members` showed all six member routes. `php artisan test` passed all 73 tests (241 assertions). Pint and `git diff --check` passed.
 - **Commit:** `c3f7cb8`
+
+---
+
+### Step 81: Add member profile API feature tests
+
+- **Date:** 2026-11-25
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Create tests/Feature/MemberProfileApiTest.php using the supplied test class. Run the focused MemberProfileApiTest suite, add a separate test for a user whose role is admin or treasurer if needed, and commit and push to main.
+  ```
+- **What the AI produced:** Added feature tests for member profile authorization, listing, creation, validation, ownership, updates, soft deletion, and nested payment history. Added a separate check that a user with an admin role cannot be assigned a member profile.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** `php artisan test --filter=MemberProfileApiTest` ran the tests but could not write PHPUnit's result cache because PHP reported the workspace path as nonexistent. `php vendor/bin/phpunit --do-not-cache-result --filter=MemberProfileApiTest` passed all 11 tests (29 assertions). `git diff --check` passed.
+- **Commit:** _fill in after committing_
