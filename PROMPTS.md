@@ -1608,4 +1608,4 @@
 - **What the AI produced:** Added the report controller and registered the two authenticated report routes.
 - **What I changed by hand and why:** No manual edits; the controller implementation followed the supplied code.
 - **How I checked it works:** `php artisan route:list --path=api/reports` showed both routes. `php artisan test` hit a Symfony Process working-directory error; `php vendor/bin/phpunit --do-not-cache-result` passed all 84 tests (270 assertions).
-- **Commit:** _fill in after committing_
+- **Commit:** `54dcc50`
