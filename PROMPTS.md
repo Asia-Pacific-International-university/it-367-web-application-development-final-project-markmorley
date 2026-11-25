@@ -1399,3 +1399,18 @@
 - **What I changed by hand and why:** I kept the local seed value in ignored `.env` only. A publicly known default password would let anyone attempt to log into a seeded administrator or treasurer account; deployments must set a unique secret before seeding.
 - **How I checked it works:** With approval, `php artisan migrate:fresh --seed` completed. Laravel authentication accepted the treasurer account using the configured password. `php artisan test` passed all 51 tests. Pint and `git diff --check` passed.
 - **Commit:** `94b792e`
+
+---
+
+### Step 69: Trust proxy headers for Railway deployment (course Step 53)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Configure Laravel to trust Railway's proxy headers in bootstrap/app.php, run the full test suite, commit with the requested message, and push.
+  ```
+- **What the AI produced:** Added `$middleware->trustProxies(at: '*')` to the middleware configuration.
+- **What I changed by hand and why:** I trusted forwarded proxy headers so Laravel can determine the original client address and HTTPS scheme behind Railway's proxy. This keeps request-aware behavior such as per-client login throttling and secure URL detection accurate.
+- **How I checked it works:** `php artisan test` passed all 51 tests. Pint and `git diff --check` passed.
+- **Commit:** `bc91049`
