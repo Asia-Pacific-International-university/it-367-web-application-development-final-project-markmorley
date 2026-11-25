@@ -1549,3 +1549,18 @@
 - **What I changed by hand and why:** Added `php artisan optimize` after the production seeder and before `artisan serve` so Laravel's production optimizations are applied at container startup.
 - **How I checked it works:** Reviewed the Dockerfile diff; no image build or runtime check was performed.
 - **Commit:** `9e79939`
+
+---
+
+### Step 79: Document the measured deployment performance
+
+- **Date:** 2026-11-25
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Fill Section 6 of DEPLOYMENT.md with the supplied performance measurement: php artisan optimize on Docker startup; authenticated GET /api/payments; one warm-up request followed by four timed requests averaged with curl.exe; before 305.2 ms, after 199.1 ms, 106.1 ms faster, and a 34.8% average response-time reduction. Include the note that this small sample is affected by network conditions and server load and is not a performance guarantee. Commit and push to origin/main and personal/main.
+  ```
+- **What the AI produced:** Replaced the pending Section 6 baseline with the supplied optimization description, test method, measured values, and small-sample caveat.
+- **What I changed by hand and why:** No manual edits; the measurement values were supplied in the prompt.
+- **How I checked it works:** Reviewed the Markdown content and diff; no new performance measurements were run.
+- **Commit:** _fill in after committing_

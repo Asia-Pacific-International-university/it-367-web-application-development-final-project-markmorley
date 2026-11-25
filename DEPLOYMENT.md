@@ -52,13 +52,22 @@ _Names only, never values._
 | `php artisan optimize`, `composer install --no-dev -o` | | |
 | Minified frontend build | | |
 
-## 6. Measurement
+## 6. Performance Optimization Measurement
 
-_One optimization measured before and after. Say how you measured it (e.g. Laravel Debugbar or Telescope query count, browser network tab, `curl -w "%{time_total}"`)._
+**Optimization:** Added `php artisan optimize` to the Docker startup command to cache Laravel's configuration, routes, events, and views.
 
-| Endpoint | Before | After | How measured |
-| --- | --- | --- | --- |
-| `GET /api/payments` | 0.3052 s | Pending | `curl.exe -w "%{time_total}"`, four requests after warm-up; average calculated in PowerShell |
+**Endpoint tested:** `GET /api/payments` (authenticated)
+
+**Method:** Sent one warm-up request, then measured four requests using `curl.exe` and averaged their total response times. The same endpoint and method were used before and after the optimization.
+
+| Measurement | Average response time |
+|---|---:|
+| Before optimization | 305.2 ms |
+| After optimization | 199.1 ms |
+| Difference | 106.1 ms faster |
+| Average response-time reduction | 34.8% |
+
+The measured average response time decreased from 305.2 ms to 199.1 ms. This is a small sample, so network conditions and server load may affect the result; it is an observed measurement rather than a guarantee of performance.
 
 ## 7. Deployment steps
 
