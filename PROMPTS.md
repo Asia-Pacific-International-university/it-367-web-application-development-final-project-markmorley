@@ -1609,3 +1609,18 @@
 - **What I changed by hand and why:** No manual edits; the controller implementation followed the supplied code.
 - **How I checked it works:** `php artisan route:list --path=api/reports` showed both routes. `php artisan test` hit a Symfony Process working-directory error; `php vendor/bin/phpunit --do-not-cache-result` passed all 84 tests (270 assertions).
 - **Commit:** `54dcc50`
+
+---
+
+### Step 83: Test and make report endpoints database-compatible
+
+- **Date:** 2026-11-25
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Add the supplied ReportApiTest feature tests, run the focused tests, then run the full test suite and Pint if they pass. Commit as "Add treasurer reports API" and push to personal main.
+  ```
+- **What the AI produced:** Added four report API feature tests for guest access, treasurer authorization, monthly totals, and annual totals; made the annual year expression compatible with the active database driver.
+- **What I changed by hand and why:** Replaced the nonexistent `UserFactory::member()` call with the default user factory because its default role is member. Replaced the SQLite-incompatible `EXTRACT` expression with a driver-specific expression after the annual report test exposed the failure. Removed unused controller imports.
+- **How I checked it works:** `php vendor/bin/phpunit --do-not-cache-result --filter=ReportApiTest` passed all 4 focused tests (15 assertions). `php artisan test` passed all 88 tests (285 assertions) after retrying with elevated access to address the workspace path issue. `vendor/bin/pint --test` passed.
+- **Commit:** _fill in after committing_

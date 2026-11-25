@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
-use App\Models\MonthlyDues;
 use App\Models\Payment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class ReportController extends Controller
 {
@@ -59,8 +57,15 @@ class ReportController extends Controller
     {
         abort_unless($request->user()->hasRole('treasurer'), 403);
 
+        $yearExpression = match (DB::connection()->getDriverName()) {
+            'sqlite' => "CAST(strftime('%Y', payment_date) AS INTEGER)",
+            'mysql', 'mariadb', 'sqlsrv' => 'YEAR(payment_date)',
+            'pgsql' => 'EXTRACT(YEAR FROM payment_date)',
+            default => throw new \RuntimeException('Unsupported database driver for annual reports.'),
+        };
+
         $years = Payment::query()
-            ->selectRaw('DISTINCT EXTRACT(YEAR FROM payment_date) AS year')
+            ->selectRaw("DISTINCT {$yearExpression} AS year")
             ->orderBy('year')
             ->pluck('year');
 
