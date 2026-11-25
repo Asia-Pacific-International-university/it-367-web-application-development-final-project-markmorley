@@ -1564,3 +1564,18 @@
 - **What I changed by hand and why:** No manual edits; the measurement values were supplied in the prompt.
 - **How I checked it works:** Reviewed the Markdown content and diff; no new performance measurements were run.
 - **Commit:** `2469ff5`
+
+---
+
+### Step 80: Add member routes and nested payment listing
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Connect the MemberController to the authenticated member resource routes and add a nested member payments endpoint that authorizes with the member policy and returns paginated PaymentResource results; verify routes and tests, then commit and push.
+  ```
+- **What the AI produced:** Connected the member CRUD controller to the API routes and added the paginated, eager-loaded `GET /api/members/{member}/payments` endpoint with policy authorization.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** Cleared the stale Laravel route cache; `route:list --path=api/members` showed all six member routes. `php artisan test` passed all 73 tests (241 assertions). Pint and `git diff --check` passed.
+- **Commit:** `c3f7cb8`
