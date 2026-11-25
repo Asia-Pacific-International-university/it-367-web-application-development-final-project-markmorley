@@ -1593,4 +1593,4 @@
 - **What the AI produced:** Added feature tests for member profile authorization, listing, creation, validation, ownership, updates, soft deletion, and nested payment history. Added a separate check that a user with an admin role cannot be assigned a member profile.
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `php artisan test --filter=MemberProfileApiTest` ran the tests but could not write PHPUnit's result cache because PHP reported the workspace path as nonexistent. `php vendor/bin/phpunit --do-not-cache-result --filter=MemberProfileApiTest` passed all 11 tests (29 assertions). `git diff --check` passed.
-- **Commit:** _fill in after committing_
+- **Commit:** `168d024`
