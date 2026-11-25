@@ -49,7 +49,7 @@ class MonthlyDuesController extends Controller
 
     public function store(StoreMonthlyDuesRequest $request): MonthlyDuesResource
     {
-        $due = MonthlyDues::create($request->validated());
+        $due = MonthlyDues::create($request->validated())->refresh();
 
         return new MonthlyDuesResource(
             $due->load('memberProfile')->loadSum('payments as allocated_total', self::ALLOCATED)
