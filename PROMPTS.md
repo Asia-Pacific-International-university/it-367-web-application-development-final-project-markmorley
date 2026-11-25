@@ -1653,4 +1653,4 @@
 - **What the AI produced:** Added the donation resource, admin/treasurer-only controller endpoint with eager-loaded payment and member data, authenticated route, and four feature tests.
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `php artisan route:list --path=api/donations` showed the endpoint. The focused suite passed 4 tests (17 assertions); the full suite passed 92 tests (302 assertions); `vendor/bin/pint --test` passed. Laravel test commands required elevated access because PHP initially reported the workspace path as nonexistent.
-- **Commit:** _fill in after committing_
+- **Commit:** `499ca9a`
