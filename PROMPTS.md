@@ -1548,4 +1548,4 @@
 - **What the AI produced:** No AI used; the Docker startup command was edited manually.
 - **What I changed by hand and why:** Added `php artisan optimize` after the production seeder and before `artisan serve` so Laravel's production optimizations are applied at container startup.
 - **How I checked it works:** Reviewed the Dockerfile diff; no image build or runtime check was performed.
-- **Commit:** _fill in after committing_
+- **Commit:** `9e79939`
