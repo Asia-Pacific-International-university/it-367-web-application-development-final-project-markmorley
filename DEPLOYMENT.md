@@ -58,7 +58,7 @@ _One optimization measured before and after. Say how you measured it (e.g. Larav
 
 | Endpoint | Before | After | How measured |
 | --- | --- | --- | --- |
-| | | | |
+| `GET /api/payments` | 0.3052 s | Pending | `curl.exe -w "%{time_total}"`, four requests after warm-up; average calculated in PowerShell |
 
 ## 7. Deployment steps
 

@@ -1519,3 +1519,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** Reviewed the documentation diff; no runtime check was needed for this documentation-only update.
 - **Commit:** `695720c`
+
+---
+
+### Step 77: Record the API response-time baseline
+
+- **Date:** 2026-11-25
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Add a Section 6 baseline row in DEPLOYMENT.md for GET /api/payments: Before 0.3052 s, After Pending, measured with curl.exe -w "%{time_total}" over four requests after warm-up and average calculated in PowerShell. Record this in PROMPTS.md, then commit and push to main.
+  ```
+- **What the AI produced:** Added the `GET /api/payments` before measurement and measurement method to Section 6 of `DEPLOYMENT.md`, with the after measurement marked pending.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** Reviewed the Markdown table and documentation diff; no runtime check was needed for this documentation-only update.
+- **Commit:** _fill in after committing_
