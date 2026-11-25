@@ -1563,4 +1563,4 @@
 - **What the AI produced:** Replaced the pending Section 6 baseline with the supplied optimization description, test method, measured values, and small-sample caveat.
 - **What I changed by hand and why:** No manual edits; the measurement values were supplied in the prompt.
 - **How I checked it works:** Reviewed the Markdown content and diff; no new performance measurements were run.
-- **Commit:** _fill in after committing_
+- **Commit:** `2469ff5`
