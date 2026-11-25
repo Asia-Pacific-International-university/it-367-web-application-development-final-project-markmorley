@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,4 +23,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Announcement resource.
     Route::apiResource('announcements', AnnouncementController::class);
+    Route::apiResource('payments', PaymentController::class)->only(['index', 'show', 'store']);
+    Route::get('my/payments', [PaymentController::class, 'mine']);
 });
