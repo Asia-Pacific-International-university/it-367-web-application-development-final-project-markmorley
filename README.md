@@ -12,7 +12,7 @@ This is the starting point for your IT341 final project. It gives you a working 
 | Announcements API | `Announcement` model, `AnnouncementController`, `AnnouncementResource`, `AnnouncementPolicy`, Form Requests | Full CRUD for published announcements and admin-managed drafts |
 | JSON-only API errors | `bootstrap/app.php`, `app/Http/Middleware/ForceJsonResponse.php` | 401, 403, 404 and 422 always come back as JSON |
 | Feature tests | `tests/Feature/AuthTest.php`, `tests/Feature/AnnouncementApiTest.php`, `tests/Feature/AnnouncementPolicyTest.php`, `tests/Feature/AnnouncementResourceTest.php` | Authentication and announcement access, validation, and response tests |
-| Demo data | `database/seeders/DatabaseSeeder.php` | Demo login: `demo@example.com` / `password` |
+| Demo data | `database/seeders/DatabaseSeeder.php` | Demo login: `demo@example.com`; password is configured with `SEED_PASSWORD` |
 | Deployment notes | `DEPLOYMENT.md` | Fill in when you deploy (CLO 3) |
 | Product requirements | `PRD.md` | Write this first, due day 3 of week 1 |
 | AI usage log | `PROMPTS.md` | Fill it in after **every** commit |
@@ -37,6 +37,8 @@ cd <your-repo>
 composer install
 cp .env.example .env
 php artisan key:generate
+# Set SEED_PASSWORD in .env to a strong local value before seeding.
+# Set a unique secret in production before running any seeders.
 
 # 3. Build the database with demo data
 touch database/database.sqlite        # Windows PowerShell: ni database/database.sqlite
@@ -58,7 +60,7 @@ Every endpoint is under `/api`. Send `Accept: application/json`, and for protect
 # Log in and get a token
 curl -X POST http://localhost:8000/api/login \
   -H "Accept: application/json" \
-  -d email=demo@example.com -d password=password
+  -d email=demo@example.com -d password='<your-SEED_PASSWORD>'
 
 # Use the token
 curl http://localhost:8000/api/notes \

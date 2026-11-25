@@ -67,6 +67,8 @@ return [
 
     'timezone' => 'UTC',
 
+    'demo_password' => env('SEED_PASSWORD', 'password'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
