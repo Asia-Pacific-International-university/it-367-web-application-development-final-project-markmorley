@@ -1369,3 +1369,18 @@
 - **What I changed by hand and why:** The controller delegates payment rules to `PaymentService`, creation authorization and validation to `StorePaymentRequest`, and response shaping to `PaymentResource`. Keeping those responsibilities out of controller methods avoids duplicating the allocation rules and permissions.
 - **How I checked it works:** Route lists showed three `/api/payments` routes and one `/api/my/payments` route. `php artisan test` passed all 34 tests. Pint and `git diff --check` passed. After `migrate:fresh --seed`, the treasurer listed 29 payments; a ฿50 payment returned ฿30 allocated and ฿20 donated, a repeat was rejected with 422, and a member's POST was rejected with 403.
 - **Commit:** `ce26ec9`
+
+---
+
+### Step 67: Add the payment endpoint tests (course Step 51)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add the supplied PaymentApiTest integration tests for payment permissions, request validation, allocation, filtering, ownership, privacy, and append-only routes. Run focused and full test suites, commit the test file, record the hash, and push.
+  ```
+- **What the AI produced:** Added 17 API tests exercising the payment policy, Form Request, controller, service, and resource together.
+- **What I changed by hand and why:** I kept the requested checks for treasurer-only creation, member/admin denial, invalid input, server-owned recorder identity, ownership-scoped views, filtering, hidden email, and absent update/delete routes.
+- **How I checked it works:** `php artisan test --filter=PaymentApiTest` passed all 17 tests (57 assertions). `php artisan test` passed all 51 tests (160 assertions). Pint and `git diff --check` passed.
+- **Commit:** `9b4c8a9`
