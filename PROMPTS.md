@@ -1518,4 +1518,4 @@
 - **What the AI produced:** Updated Section 1 of `DEPLOYMENT.md` with the Render API URL, health check, CORS origin, and Week 3 frontend plan.
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** Reviewed the documentation diff; no runtime check was needed for this documentation-only update.
-- **Commit:** _fill in after committing_
+- **Commit:** `695720c`
