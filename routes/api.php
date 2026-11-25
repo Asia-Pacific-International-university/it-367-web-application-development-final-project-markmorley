@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\MonthlyDuesController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,4 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('my/monthly-dues', [MonthlyDuesController::class, 'mine']);
     Route::apiResource('members', MemberController::class);
     Route::get('members/{member}/payments', [MemberController::class, 'payments']);
+    Route::get('reports/monthly', [ReportController::class, 'monthly']);
+    Route::get('reports/annual', [ReportController::class, 'annual']);
 });

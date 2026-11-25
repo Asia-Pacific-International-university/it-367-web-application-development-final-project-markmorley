@@ -1594,3 +1594,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `php artisan test --filter=MemberProfileApiTest` ran the tests but could not write PHPUnit's result cache because PHP reported the workspace path as nonexistent. `php vendor/bin/phpunit --do-not-cache-result --filter=MemberProfileApiTest` passed all 11 tests (29 assertions). `git diff --check` passed.
 - **Commit:** `168d024`
+
+---
+
+### Step 82: Add monthly and annual report endpoints
+
+- **Date:** 2026-11-25
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Create app/Http/Controllers/Api/ReportController.php with the supplied treasurer-only monthly and annual payment, dues-allocation, and donation summaries. Register GET /api/reports/monthly and GET /api/reports/annual inside the auth:sanctum route group. Check the report routes and run the test suite.
+  ```
+- **What the AI produced:** Added the report controller and registered the two authenticated report routes.
+- **What I changed by hand and why:** No manual edits; the controller implementation followed the supplied code.
+- **How I checked it works:** `php artisan route:list --path=api/reports` showed both routes. `php artisan test` hit a Symfony Process working-directory error; `php vendor/bin/phpunit --do-not-cache-result` passed all 84 tests (270 assertions).
+- **Commit:** _fill in after committing_
