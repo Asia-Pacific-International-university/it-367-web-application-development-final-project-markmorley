@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DonationController;
 use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\MonthlyDuesController;
 use App\Http\Controllers\Api\PaymentController;
@@ -35,4 +36,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('members/{member}/payments', [MemberController::class, 'payments']);
     Route::get('reports/monthly', [ReportController::class, 'monthly']);
     Route::get('reports/annual', [ReportController::class, 'annual']);
+    Route::get('donations', [DonationController::class, 'index']);
 });
