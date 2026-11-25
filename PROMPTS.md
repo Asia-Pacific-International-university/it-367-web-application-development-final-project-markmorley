@@ -1443,4 +1443,4 @@
 - **What the AI produced:** Added a PHP 8.3 Apache Dockerfile that installs production Composer dependencies and configures Apache to serve Laravel's `public` directory. Added a `.dockerignore` for environment files, Git metadata, and local dependencies.
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** Confirmed both files are in the project root beside `artisan` and `composer.json`. Confirmed `.env` is excluded while `.env.example` is allowed. A Docker image build was not run.
-- **Commit:** Pending
+- **Commit:** `814877e`
