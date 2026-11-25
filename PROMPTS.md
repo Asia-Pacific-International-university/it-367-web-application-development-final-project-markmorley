@@ -1444,3 +1444,18 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** Confirmed both files are in the project root beside `artisan` and `composer.json`. Confirmed `.env` is excluded while `.env.example` is allowed. A Docker image build was not run.
 - **Commit:** `814877e`
+
+---
+
+### Step 72: Add monthly-dues policy, resource, and requests (course Step 55)
+
+- **Date:** 2026-11-25
+- **Tool:** Copilot
+- **Prompt:**
+  ```text
+  Add the MonthlyDues policy, resource, and store/update Form Requests as specified for course Step 55, run checks, commit, and push.
+  ```
+- **What the AI produced:** Added role- and ownership-aware authorization, a resource that conditionally includes calculated allocation status and loaded member details, and validation rules for creating and updating monthly dues.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** `php artisan test` passed all 51 tests (160 assertions). Pint and `git diff --check` passed.
+- **Commit:** `79f4233`
