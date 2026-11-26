@@ -62,6 +62,58 @@ class MemberProfileApiTest extends TestCase
         $this->getJson('/api/members')->assertForbidden();
     }
 
+    public function test_guest_cannot_list_available_member_accounts(): void
+    {
+        $this->getJson('/api/member-accounts')->assertUnauthorized();
+    }
+
+    public function test_member_cannot_list_available_member_accounts(): void
+    {
+        $this->actingAsMemberWithProfile();
+
+        $this->getJson('/api/member-accounts')->assertForbidden();
+    }
+
+    public function test_admin_and_treasurer_can_list_only_member_accounts_without_profiles(): void
+    {
+        $availableAccount = User::factory()->create([
+            'name' => 'Available Member',
+            'email' => 'available@example.com',
+        ]);
+
+        $profiledAccount = User::factory()->create([
+            'name' => 'Profiled Member',
+            'email' => 'profiled@example.com',
+        ]);
+
+        MemberProfile::factory()->for($profiledAccount)->create();
+
+        User::factory()->admin()->create([
+            'name' => 'Admin Account',
+            'email' => 'admin@example.com',
+        ]);
+
+        $this->actingAsAdmin();
+
+        $this->getJson('/api/member-accounts')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'id' => $availableAccount->id,
+                'name' => 'Available Member',
+                'email' => 'available@example.com',
+            ])
+            ->assertJsonMissing([
+                'id' => $profiledAccount->id,
+            ]);
+
+        $this->actingAsTreasurer();
+
+        $this->getJson('/api/member-accounts')
+            ->assertOk()
+            ->assertJsonCount(1, 'data');
+    }
+
     public function test_admin_can_create_a_member_profile(): void
     {
         $this->actingAsAdmin();

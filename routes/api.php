@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->parameters(['monthly-dues' => 'monthly_due']);
     Route::get('my/monthly-dues', [MonthlyDuesController::class, 'mine']);
     Route::apiResource('members', MemberController::class);
+    Route::get('/member-accounts', [MemberController::class, 'availableAccounts']);
     Route::get('members/{member}/payments', [MemberController::class, 'payments']);
     Route::get('reports/monthly', [ReportController::class, 'monthly']);
     Route::get('reports/annual', [ReportController::class, 'annual']);

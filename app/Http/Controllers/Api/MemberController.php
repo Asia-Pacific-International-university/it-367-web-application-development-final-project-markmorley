@@ -8,11 +8,26 @@ use App\Http\Requests\UpdateMemberProfileRequest;
 use App\Http\Resources\MemberProfileResource;
 use App\Http\Resources\PaymentResource;
 use App\Models\MemberProfile;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 
 class MemberController extends Controller
 {
+    public function availableAccounts(): JsonResponse
+    {
+        Gate::authorize('viewAny', MemberProfile::class);
+
+        $accounts = User::query()
+            ->where('role', User::ROLE_MEMBER)
+            ->whereDoesntHave('memberProfile')
+            ->orderBy('name')
+            ->get(['id', 'name', 'email']);
+
+        return response()->json(['data' => $accounts]);
+    }
+
     public function index()
     {
         Gate::authorize('viewAny', MemberProfile::class);
