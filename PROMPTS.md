@@ -1,7 +1,7 @@
-# PROMPTS.md: AI usage log
+﻿# PROMPTS.md: AI usage log
 
 **Student:** Mark Michael Morley
-**Project:** Filipino Club Membership and Dues Management System: a Laravel 12 REST API with a Vue.js 3 frontend for managing club members, monthly ฿30 dues, payments, donations, and announcements.
+**Project:** Filipino Club Membership and Dues Management System: a Laravel 12 REST API with a Vue.js 3 frontend for managing club members, monthly à¸¿30 dues, payments, donations, and announcements.
 **AI tools used:** Claude _(ChatGPT, Copilot, Cursor)_
 
 ## Rules (from the assignment)
@@ -130,11 +130,11 @@
   - A User (Club Officer / Admin) can publish many Announcements.
 
   ### 5.3 Monthly Dues and Donations
-  Each member must contribute at least ฿30 per month. The system will calculate the total contributions for each month.
+  Each member must contribute at least à¸¿30 per month. The system will calculate the total contributions for each month.
 
-  - If the monthly total is at least ฿30, the member is marked as paid.
-  - If the monthly total is below ฿30, the member is marked as unpaid.
-  - Any amount above ฿30 is recorded as a donation.
+  - If the monthly total is at least à¸¿30, the member is marked as paid.
+  - If the monthly total is below à¸¿30, the member is marked as unpaid.
+  - Any amount above à¸¿30 is recorded as a donation.
   - Extra contributions do not carry over to the following month.
 
   ### 5.4 Announcement Management
@@ -346,14 +346,14 @@
   The EventRegistration model is the pivot model for the many-to-many relationship. It stores additional information about the relationship, including the registration date and registration status.
 
   ### 5.3 Monthly Dues and Donations
-  Each member must contribute at least ฿30 per month. The system will calculate the total contributions for each member for that month.
+  Each member must contribute at least à¸¿30 per month. The system will calculate the total contributions for each member for that month.
 
-  - If the monthly amount applied to dues reaches at least ฿30, the member is marked as paid.
-  - If the monthly amount applied to dues is below ฿30, the member is marked as unpaid.
-  - If a member contributes more than the remaining amount needed to reach ฿30 in a month, the excess is recorded as a donation.
+  - If the monthly amount applied to dues reaches at least à¸¿30, the member is marked as paid.
+  - If the monthly amount applied to dues is below à¸¿30, the member is marked as unpaid.
+  - If a member contributes more than the remaining amount needed to reach à¸¿30 in a month, the excess is recorded as a donation.
   - Extra contributions do not carry over to the following month.
   - Financial reports will show dues and donations separately.
-  The system will calculate the dues portion across all payments for that member and month. For example, if a member pays ฿20 and later pays another ฿20 in the same month, ฿30 is applied to dues and the remaining ฿10 is recorded as a donation.
+  The system will calculate the dues portion across all payments for that member and month. For example, if a member pays à¸¿20 and later pays another à¸¿20 in the same month, à¸¿30 is applied to dues and the remaining à¸¿10 is recorded as a donation.
 
   ### 5.4 Announcement Management
   Only users with the Club Officer / Admin role can create, edit, or delete announcements. Treasurers and members can view published announcements but cannot create, edit, or delete them.
@@ -1322,7 +1322,7 @@
   ```
 - **What the AI produced:** Added the payment allocation service and focused tests for donations, partial payments, already-paid months, invalid member/month selection, and empty selection.
 - **What I changed by hand and why:** I added a service-level rejection for an empty `monthly_dues_ids` array. The PRD requires at least one selected month, and without the guard the service could save a donation-only payment.
-- **How I checked it works:** Tinker returned a ฿20 donation and ฿30 allocation from a ฿50 payment; a repeat for the paid month raised a validation error without increasing the payment count; a ฿10 partial payment had no donation. The four focused service tests passed, and `php artisan test` passed all 29 tests. Pint and `git diff --check` passed.
+- **How I checked it works:** Tinker returned a à¸¿20 donation and à¸¿30 allocation from a à¸¿50 payment; a repeat for the paid month raised a validation error without increasing the payment count; a à¸¿10 partial payment had no donation. The four focused service tests passed, and `php artisan test` passed all 29 tests. Pint and `git diff --check` passed.
 - **Commit:** `430b866`
 
 ---
@@ -1367,7 +1367,7 @@
   ```
 - **What the AI produced:** Added the payment controller and authenticated payment list/show/create and own-payment routes.
 - **What I changed by hand and why:** The controller delegates payment rules to `PaymentService`, creation authorization and validation to `StorePaymentRequest`, and response shaping to `PaymentResource`. Keeping those responsibilities out of controller methods avoids duplicating the allocation rules and permissions.
-- **How I checked it works:** Route lists showed three `/api/payments` routes and one `/api/my/payments` route. `php artisan test` passed all 34 tests. Pint and `git diff --check` passed. After `migrate:fresh --seed`, the treasurer listed 29 payments; a ฿50 payment returned ฿30 allocated and ฿20 donated, a repeat was rejected with 422, and a member's POST was rejected with 403.
+- **How I checked it works:** Route lists showed three `/api/payments` routes and one `/api/my/payments` route. `php artisan test` passed all 34 tests. Pint and `git diff --check` passed. After `migrate:fresh --seed`, the treasurer listed 29 payments; a à¸¿50 payment returned à¸¿30 allocated and à¸¿20 donated, a repeat was rejected with 422, and a member's POST was rejected with 403.
 - **Commit:** `ce26ec9`
 
 ---
@@ -1669,3 +1669,19 @@
 - **What I changed by hand and why:** No manual edits.
 - **How I checked it works:** `php artisan test` passed all 95 tests (308 assertions). `npm.cmd test` passed 2 tests. `npm.cmd run build` passed.
 - **Commit:** `8974f87`
+
+---
+
+### Step 87: Set up standalone frontend tooling
+
+- **Date:** 2026-11-26
+- **Tool:** Codex
+- **Prompt:**
+  ```text
+  Add the supplied frontend/package.json, frontend/vite.config.js, frontend/index.html, frontend/src/main.js, frontend/src/style.css, and frontend/.env.example. Replace frontend/src/api.js with the supplied Axios client using VITE_API_BASE_URL and the sessionStorage auth token. Then run npm install, npm.cmd test, and npm.cmd run build from frontend.
+  ```
+- **What the AI produced:** Added the standalone frontend package configuration, Vite/Vitest setup, HTML entry point, Vue mount entry point, Tailwind stylesheet, API base URL template, and Axios client.
+- **What I changed by hand and why:** No manual edits.
+- **How I checked it works:** `npm.cmd install` completed (npm reported five moderate audit findings and an unapproved esbuild install script). `npm.cmd test` passed 2 tests. `npm.cmd run build` completed successfully.
+- **Commit:** `e8715f9`
+
