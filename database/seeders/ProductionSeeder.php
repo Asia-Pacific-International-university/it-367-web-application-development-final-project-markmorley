@@ -19,13 +19,10 @@ class ProductionSeeder extends Seeder
         foreach ($accounts as [$name, $email, $role]) {
             $user = User::firstOrNew(['email' => $email]);
 
-            if (! $user->exists) {
-                $user->password = config('app.demo_password');
-            }
-
             $user->forceFill([
                 'name' => $name,
                 'role' => $role,
+                'password' => config('app.demo_password'),
                 'email_verified_at' => now(),
             ])->save();
         }
